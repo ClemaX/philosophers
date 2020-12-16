@@ -1,26 +1,4 @@
-#include <sys/time.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
-
-typedef struct	s_philos
-{
-	
-}				t_philos;
-
-typedef struct	s_table
-{
-	t_philos	*philos;
-	uint64_t	seats;
-	uint64_t	appetite;
-	uint64_t	time_start;
-	uint64_t	time_die;
-	uint64_t	time_eat;
-	uint64_t	time_sleep;
-}				t_table;
+#include <table.h>
 
 static uint64_t	clock_millis(void)
 {
@@ -76,15 +54,11 @@ bool			table_set(t_table *table, int ac, char **av)
 void			table_start(t_table *table)
 {
 	table->time_start = clock_millis();
+	// TODO: Start philos
 }
 
-int				main(int ac, char **av)
+int				table_log(t_table *table, const char *message)
 {
-	t_table	table;
-
-	if (!table_set(&table, ac, av))
-		return (1);
-	table_start(&table);
-	dprintf(STDERR_FILENO, "%lu %s\n", clock_millis() - table.time_start, "Start");
-	return (0);
+	return (dprintf(STDERR_FILENO, "%lu %s\n",
+		clock_millis() - table->time_start, message));
 }
