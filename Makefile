@@ -12,13 +12,14 @@ OBJDIR=objs
 BINDIR=.
 
 # Flags
-CFLAGS = -Wall -Wextra -Werror -I$(INCDIR)
+CFLAGS = -Wall -Wextra -I$(INCDIR) -g3
 DFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.d
 
 SRCS = $(addprefix $(SRCDIR)/,\
 	main.c\
 	philo.c\
 	table.c\
+	utils.c\
 )
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
@@ -56,7 +57,7 @@ clean:
 fclean: clean
 	@echo "RM $(BINDIR)/$(NAME)"
 	rm -f "$(BINDIR)/$(NAME)"
-	@rmdir "$(BINDIR)" 2>/dev/null && echo "RM $(BINDIR)"
+	@rmdir "$(BINDIR)" 2>/dev/null && echo "RM $(BINDIR)" || :
 
 re: fclean all
 

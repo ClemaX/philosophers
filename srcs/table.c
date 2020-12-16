@@ -1,64 +1,83 @@
 #include <table.h>
 
-static uint64_t	clock_millis(void)
-{
-	struct timeval	now;
-
-	gettimeofday(&now, NULL);
-	return (now.tv_sec * (uint64_t)1000 + now.tv_usec / 1000);
-}
-
-static uint64_t	atoui(const char *str)
-{
-	uint64_t	i;
-
-	i = 0;
-	while (*str >= '0' && *str <= '9' && i < INT64_MAX)
-		i = i * 10 + *str++ - '0';
-	return ((i >= INT64_MAX) ? 0 : i);
-}
-
 void			show_usage(const char *name)
 {
-	dprintf(2, "Usage:	%s seats time_die time_eat time_sleep [appetite]\n", name);
+	dprintf(2, "Usage:	%s seats time_die time_eat time_sleep [appetite]\n",
+		name);
 }
 
-bool			table_set(t_table *table, int ac, char **av)
+bool			table_set(t_table *table, t_philo **philos, int ac, char **av)
 {
-	if (ac == 6)
-		table->appetite = atoui(av[5]);
-	else if (ac == 5)
-		table->appetite = 1;
-	else
+	table->appetite = 1;
+	if ((ac == 5 || (ac == 6 && (table->appetite = atoui(av[5]))))
+	&& (table->seats = atoui(av[1]))
+	&& (table->time_to_die = atoui(av[2]))
+	&& (table->time_to_eat = atoui(av[3]))
+	&& (table->time_to_sleep = atoui(av[4])))
 	{
-		show_usage(av[0]);
-		return (false);
-	}
-	if (table->appetite && (table->seats = atoui(av[1]))
-	&& (table->time_die = atoui(av[2]))
-	&& (table->time_eat = atoui(av[3]))
-	&& (table->time_sleep = atoui(av[4])))
-	{
-		if (!(table->philos = malloc(sizeof(*table->philos) * table->seats)))
+		if ((*philos = malloc(sizeof(**philos) * table->seats)))
 		{
-			perror(av[0]);
-			return (false);
+			if ((table->forks = malloc(sizeof(*table->forks) * table->seats)))
+				return (true);
+			free(*philos);
 		}
-		// TODO: Initialize philos
-		return (true);
+		perror("malloc");
 	}
-	show_usage(av[0]);
+	else
+		show_usage(av[0]);
 	return (false);
 }
 
-void			table_start(t_table *table)
+void			table_clear(t_table *table, t_philo **philos)
 {
-	table->time_start = clock_millis();
-	// TODO: Start philos
+	free(table->forks);
+	free(*philos);
+	table->forks = NULL;
+	*philos = NULL;
 }
 
-int				table_log(t_table *table, const char *message)
+bool			table_start(t_table *table, t_philo *philos)
 {
-	return (dprintf(STDERR_FILENO, "%lu %s\n",
-		clock_millis() - table->time_start, message));
+	uint64_t			i;
+	pthread_attr_t		thread_attr;
+	//pthread_mutexattr_t	mutex_attr;
+	int					err;
+
+	pthread_attr_init(&thread_attr);
+    pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
+	pthread_mutex_init(&table->write_lock, NULL);
+	i = 0;
+	err = 0;
+	table->time_start = clock_millis();
+	while (!err && i < table->seats)
+	{
+		philos[i].index = i;
+		philos[i].table = table;
+		err = pthread_create(&philos[i].tid, &thread_attr, &philo_thread, &philos[i]);
+		i++;
+	}
+	if (err)
+	{
+		dprintf(STDERR_FILENO, "pthread_create: (%d)%s\n", err, strerror(err));
+		// TODO: Join philos before freeing data
+		return (false);
+	}
+	return (true);
+}
+
+bool			table_join(t_table *table, t_philo *philos)
+{
+	uint64_t	i;
+	int			err;
+
+	i = 0;
+	while (i < table->seats
+	&& !(err = pthread_join(philos[i].tid, NULL)))
+		i++;
+	if (err)
+	{
+		dprintf(STDERR_FILENO, "pthread_join: (%d)%s\n", err, strerror(err));
+		return (false);
+	}
+	return (true);
 }
