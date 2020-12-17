@@ -59,6 +59,7 @@ bool			table_start(t_table *table, t_philo *philos)
 	if (err)
 	{
 		dprintf(STDERR_FILENO, "pthread_create: (%d)%s\n", err, strerror(err));
+		// TODO: Investigate pthread cancelation and cleanup
 		// TODO: Join philos before freeing data
 		return (false);
 	}
@@ -71,6 +72,7 @@ bool			table_join(t_table *table, t_philo *philos)
 	int			err;
 
 	i = 0;
+	err = 0;
 	while (i < table->seats
 	&& !(err = pthread_join(philos[i].tid, NULL)))
 		i++;
