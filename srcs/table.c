@@ -44,7 +44,7 @@ bool			table_start(t_table *table, t_philo *philos)
 	int					err;
 
 	pthread_attr_init(&thread_attr);
-    pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
+	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
 	pthread_mutex_init(&table->write_lock, NULL);
 	i = 0;
 	err = 0;
