@@ -14,6 +14,7 @@ BINDIR=.
 # Flags
 CFLAGS = -Wall -Wextra -I$(INCDIR) -g3
 DFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.d
+LDFLAGS = -lpthread
 
 SRCS = $(addprefix $(SRCDIR)/,\
 	main.c\
@@ -26,7 +27,7 @@ OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 DEPS = $(OBJS:.o=.d)
 
 COMPILE.c = $(CC) $(DFLAGS) $(CFLAGS) -c
-COMPILE.o = $(LD) $(LFLAGS)
+COMPILE.o = $(LD) $(LDFLAGS)
 
 all: $(BINDIR)/$(NAME)
 

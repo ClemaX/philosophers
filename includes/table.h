@@ -26,7 +26,9 @@ typedef struct	s_table
 	t_time			time_to_sleep;
 }				t_table;
 
-bool			table_set(t_table *table, t_philo **philos, int ac, char **av);
+
+bool			table_new(t_table *table, t_philo **philos, int ac, char **av);
+bool			table_set(t_table *table, t_philo *philos);
 bool			table_start(t_table *table, t_philo *philos);
 int				table_log(t_table *table, const char *message);
 void			table_clear(t_table *table, t_philo **philos);
