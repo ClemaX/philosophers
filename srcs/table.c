@@ -4,7 +4,7 @@
 
 void			show_usage(const char *name)
 {
-	dprintf(2, "Usage:	%s seats time_die time_eat time_sleep [appetite]\n",
+	dprintf(2, "Usage:	%s seats time_to_die time_to_eat time_to_sleep [appetite]\n",
 		name);
 }
 
