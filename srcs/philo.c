@@ -19,12 +19,13 @@ bool	philo_log(t_philo *philo, const char *message)
 	return (false);
 }
 
-// TODO: Fix deadlock when philos each take one fork
+// TODO: Forks should be initialized at the start since these are runtime-constants
 void	philo_eat(t_philo *philo)
 {
-	const size_t    forks[2] = {
-		philo->index,
-		(philo->index + 1 == philo->table->seats) ? 0 : philo->index + 1
+	const size_t	wrapped_fork = (philo->index + 1) % philo->table->seats;
+	const size_t	forks[2] = {
+		wrapped_fork == 0 ? wrapped_fork : philo->index,
+		wrapped_fork == 0 ? philo->index : wrapped_fork,
 	};
 	int				err;
 
