@@ -36,6 +36,7 @@ void	philo_eat(t_philo *philo)
 		{
 			philo_log(philo, "has taken a fork");
 			philo_log(philo, "is eating");
+			philo->time_die = clock_millis() + philo->table->time_to_die;
 			usleep(philo->table->time_to_eat * 1000);
 			pthread_mutex_unlock(&philo->table->forks[forks[1]]);
 		}
@@ -63,8 +64,9 @@ void	*philo_thread(void *data)
 	t_philo *const	philo = data;
 	uint64_t		times_ate;
 
+	philo->time_die = clock_millis() + philo->table->time_to_die;
 	times_ate = 0;
-	while (times_ate++ < philo->table->appetite)
+	while (times_ate++ < philo->table->appetite && philo->time_die > clock_millis())
 	{
 		philo_eat(philo);
 		philo_sleep(philo);
