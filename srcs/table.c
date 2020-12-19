@@ -4,7 +4,7 @@
 
 void			show_usage(const char *name)
 {
-	dprintf(2, "Usage:	%s seats time_die time_eat time_sleep [appetite]\n",
+	dprintf(2, "Usage:	%s seats time_to_die time_to_eat time_to_sleep [appetite]\n",
 		name);
 }
 
@@ -32,6 +32,10 @@ bool			table_new(t_table *table, t_philo **philos, int ac, char **av)
 
 void			table_clear(t_table *table, t_philo **philos)
 {
+	uint64_t	i;
+
+	while (i < table->seats)
+		pthread_mutex_destroy(&table->forks[i]);
 	free(table->forks);
 	free(*philos);
 	table->forks = NULL;
@@ -65,7 +69,6 @@ bool			table_start(t_table *table, t_philo *philos)
 {
 	uint64_t			i;
 	pthread_attr_t		thread_attr;
-	//pthread_mutexattr_t	mutex_attr;
 	int					err;
 
 	table_set(table, philos);
@@ -74,11 +77,9 @@ bool			table_start(t_table *table, t_philo *philos)
 	i = 0;
 	err = 0;
 	table->time_start = clock_millis();
-	while (!err && i < table->seats)
-	{
-		err = pthread_create(&philos[i].tid, &thread_attr, &philo_thread, &philos[i]);
+	while (i < table->seats
+	&& !(err = pthread_create(&philos[i].tid, &thread_attr, &philo_thread, &philos[i])))
 		i++;
-	}
 	if (err)
 	{
 		dprintf(STDERR_FILENO, "pthread_create: (%d)%s\n", err, strerror(err));
