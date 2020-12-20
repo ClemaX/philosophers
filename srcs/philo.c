@@ -19,6 +19,7 @@ bool	philo_log(t_philo *philo, const char *message)
 	return (false);
 }
 
+/*
 bool	philo_alive(t_philo *philo)
 {
 	const bool	starved = clock_millis() >= philo->time_die;
@@ -34,6 +35,7 @@ bool	philo_alive(t_philo *philo)
 	pthread_mutex_unlock(&philo->table->lock_run);
 	return (running);
 }
+*/
 
 // TODO: Issue when philosophers starve, waiting for a fork
 // TODO: Forks should be initialized at the start since these are runtime-constants
@@ -44,34 +46,38 @@ bool	philo_eat(t_philo *philo)
 		wrapped_fork == 0 ? wrapped_fork : philo->index,
 		wrapped_fork == 0 ? philo->index : wrapped_fork,
 	};
-	bool			alive;
+	bool			running;
 
-	if ((alive = philo_alive(philo)))
+	if ((running = table_running(philo->table)))
 	{
 		pthread_mutex_lock(&philo->table->forks[forks[0]]);
-		if ((alive = philo_alive(philo)))
+		if ((running = table_running(philo->table)))
 		{
 			philo_log(philo, "has taken a fork");
 			pthread_mutex_lock(&philo->table->forks[forks[1]]);
-			if ((alive = philo_alive(philo)))
+			if ((running = table_running(philo->table)))
 			{
 				philo_log(philo, "has taken a fork");
 				philo_log(philo, "is eating");
+				pthread_mutex_lock(&philo->lock);
+				if (philo->table->appetite)
+					running = ++philo->times_ate < philo->table->appetite;
 				philo->time_die = clock_millis() + philo->table->time_to_die;
+				pthread_mutex_unlock(&philo->lock);
 				usleep(philo->table->time_to_eat * 1000);
 			}
 			pthread_mutex_unlock(&philo->table->forks[forks[1]]);
 		}
 		pthread_mutex_unlock(&philo->table->forks[forks[0]]);
 	}
-	return (alive);
+	return (running);
 }
 
 bool	philo_sleep(t_philo *philo)
 {
 	t_time	now;
 
-	if (philo_alive(philo))
+	if (table_running(philo->table))
 	{
 		now = clock_millis();
 		if ((now + philo->table->time_to_sleep) < philo->time_die)
@@ -80,19 +86,13 @@ bool	philo_sleep(t_philo *philo)
 			usleep(philo->table->time_to_sleep * 1000);
 			return (true);
 		}
-		else
-		{
-			usleep((philo->time_die - now )* 1000);
-			if (philo_alive(philo))
-				philo_log(philo, "has died");
-		}
 	}
 	return (false);
 }
 
 bool	philo_think(t_philo *philo)
 {
-	if (philo_alive(philo))
+	if (table_running(philo->table))
 	{
 		philo_log(philo, "is thinking");
 		//usleep(10 * 1000);
@@ -105,12 +105,12 @@ bool	philo_think(t_philo *philo)
 void	*philo_thread(void *data)
 {
 	t_philo *const	philo = data;
-	uint64_t		times_ate;
 
+	pthread_mutex_lock(&philo->lock);
+	philo->times_ate = 0;
 	philo->time_die = clock_millis() + philo->table->time_to_die;
-	times_ate = 0;
+	pthread_mutex_unlock(&philo->lock);
 	while (philo_eat(philo)
-	&& (philo->table->appetite == 0 || times_ate++ < philo->table->appetite)
 	&& philo_sleep(philo)
 	&& philo_think(philo))
 		;

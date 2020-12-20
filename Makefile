@@ -18,6 +18,7 @@ LDFLAGS = -lpthread
 
 SRCS = $(addprefix $(SRCDIR)/,\
 	main.c\
+	observer.c\
 	philo.c\
 	table.c\
 	utils.c\

@@ -8,14 +8,19 @@
 
 typedef struct s_table t_table;
 
+// TODO: Use uint64_t instead of size_t to ensure cross-platform compatibility
+
 typedef struct	s_philo
 {
-	t_table		*table;
-	size_t		index;
-	pthread_t	tid;
-	t_time		time_die;
+	pthread_mutex_t	lock;
+	t_table			*table;
+	uint64_t		index;
+	pthread_t		tid;
+	t_time			time_die;
+	uint64_t		times_ate;
 }				t_philo;
 
+bool	philo_log(t_philo *philo, const char *message);
 void	*philo_thread(void *data);
 
 #endif

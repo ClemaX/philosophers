@@ -3,12 +3,11 @@
 int				main(int ac, char **av)
 {
 	t_table	table;
-	t_philo	*philos;
 
-	if (!table_new(&table, &philos, ac, av))
+	if (!table_new(&table, ac, av))
 		return (1);
-	if (table_start(&table, philos))
-		table_join(&table, philos);
-	table_clear(&table, &philos);
+	if (table_start(&table))
+		table_join(&table);
+	table_clear(&table);
 	return (0);
 }
