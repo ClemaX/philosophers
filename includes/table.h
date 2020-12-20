@@ -17,7 +17,9 @@ typedef struct	s_philo	t_philo;
 typedef struct	s_table
 {
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	write_lock;
+	pthread_mutex_t	lock_write;
+	pthread_mutex_t	lock_run;
+	bool			running;
 	uint64_t		seats;
 	uint64_t		appetite;
 	t_time			time_start;

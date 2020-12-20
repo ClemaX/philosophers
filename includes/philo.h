@@ -8,7 +8,6 @@
 
 typedef struct s_table t_table;
 
-
 typedef struct	s_philo
 {
 	t_table		*table;

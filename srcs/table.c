@@ -10,7 +10,7 @@ void			show_usage(const char *name)
 
 bool			table_new(t_table *table, t_philo **philos, int ac, char **av)
 {
-	table->appetite = 1;
+	table->appetite = 0;
 	if ((ac == 5 || (ac == 6 && (table->appetite = atoui(av[5]))))
 	&& (table->seats = atoui(av[1]))
 	&& (table->time_to_die = atoui(av[2]))
@@ -32,19 +32,26 @@ bool			table_new(t_table *table, t_philo **philos, int ac, char **av)
 
 void			table_clear(t_table *table, t_philo **philos)
 {
+	uint64_t	i;
+
+	i = 0;
+	while (i < table->seats)
+		pthread_mutex_destroy(&table->forks[i++]);
+	pthread_mutex_destroy(&table->lock_run);
+	pthread_mutex_destroy(&table->lock_write);
 	free(table->forks);
 	free(*philos);
 	table->forks = NULL;
 	*philos = NULL;
 }
 
-// TODO: Investigate mutex attributes
 bool			table_set(t_table *table, t_philo *philos)
 {
 	uint64_t	i;
 	int			err;
 
-	if (!(err = pthread_mutex_init(&table->write_lock, NULL)))
+	if (!(err = pthread_mutex_init(&table->lock_write, NULL))
+	&& !(err = pthread_mutex_init(&table->lock_run, NULL)))
 	{
 		i = 0;
 		while (i < table->seats
@@ -64,21 +71,16 @@ bool			table_set(t_table *table, t_philo *philos)
 bool			table_start(t_table *table, t_philo *philos)
 {
 	uint64_t			i;
-	pthread_attr_t		thread_attr;
-	//pthread_mutexattr_t	mutex_attr;
 	int					err;
 
 	table_set(table, philos);
-	pthread_attr_init(&thread_attr);
-    pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
 	i = 0;
 	err = 0;
+	table->running = true;
 	table->time_start = clock_millis();
-	while (!err && i < table->seats)
-	{
-		err = pthread_create(&philos[i].tid, &thread_attr, &philo_thread, &philos[i]);
+	while (i < table->seats
+	&& !(err = pthread_create(&philos[i].tid, NULL, &philo_thread, &philos[i])))
 		i++;
-	}
 	if (err)
 	{
 		dprintf(STDERR_FILENO, "pthread_create: (%d)%s\n", err, strerror(err));
