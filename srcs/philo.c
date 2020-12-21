@@ -39,6 +39,7 @@ bool	philo_alive(t_philo *philo)
 
 // TODO: Issue when philosophers starve, waiting for a fork
 // TODO: Forks should be initialized at the start since these are runtime-constants
+// TODO: Maybe reject single dining philosopher
 bool	philo_eat(t_philo *philo)
 {
 	const size_t	wrapped_fork = (philo->index + 1) % philo->table->seats;
@@ -54,19 +55,22 @@ bool	philo_eat(t_philo *philo)
 		if ((running = table_running(philo->table)))
 		{
 			philo_log(philo, "has taken a fork");
-			pthread_mutex_lock(&philo->table->forks[forks[1]]);
-			if ((running = table_running(philo->table)))
+			if ((running = forks[0] != forks[1]))
 			{
-				philo_log(philo, "has taken a fork");
-				philo_log(philo, "is eating");
-				pthread_mutex_lock(&philo->lock);
-				if (philo->table->appetite)
-					running = ++philo->times_ate < philo->table->appetite;
-				philo->time_die = clock_millis() + philo->table->time_to_die;
-				pthread_mutex_unlock(&philo->lock);
-				usleep(philo->table->time_to_eat * 1000);
+				pthread_mutex_lock(&philo->table->forks[forks[1]]);
+				if ((running = table_running(philo->table)))
+				{
+					philo_log(philo, "has taken a fork");
+					philo_log(philo, "is eating");
+					pthread_mutex_lock(&philo->lock);
+					if (philo->table->appetite)
+						running = ++philo->times_ate < philo->table->appetite;
+					philo->time_die = clock_millis() + philo->table->time_to_die;
+					pthread_mutex_unlock(&philo->lock);
+					usleep(philo->table->time_to_eat * 1000);
+				}
+				pthread_mutex_unlock(&philo->table->forks[forks[1]]);
 			}
-			pthread_mutex_unlock(&philo->table->forks[forks[1]]);
 		}
 		pthread_mutex_unlock(&philo->table->forks[forks[0]]);
 	}
