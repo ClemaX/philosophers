@@ -22,7 +22,7 @@ void	*observer_thread(void *data)
 	satisfied = false;
 	while (running && !satisfied && alive)
 	{
-		usleep(philo->table->time_to_die);
+		usleep(philo->table->time_to_die * 1000);
 		pthread_mutex_lock(&philo->lock);
 		if (!(satisfied = philo->times_ate == philo->table->appetite)
 		&& !(alive = (clock_millis() < philo->time_die)))
@@ -40,7 +40,7 @@ void	*observer_thread(void *data)
 	}
 	// TODO: Remove this debug log
 	if (satisfied)
-		philo_log(philo, "satisfied");
+		philo_log(philo, "is satisfied");
 	pthread_join(philo->tid, NULL);
 	return (NULL);
 }
