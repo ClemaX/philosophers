@@ -42,8 +42,8 @@ bool	philo_alive(t_philo *philo)
 // TODO: Maybe reject single dining philosopher
 bool	philo_eat(t_philo *philo)
 {
-	const size_t	wrapped_fork = (philo->index + 1) % philo->table->seats;
-	const size_t	forks[2] = {
+	const uint64_t	wrapped_fork = (philo->index + 1) % philo->table->seats;
+	const uint64_t	forks[2] = {
 		wrapped_fork == 0 ? wrapped_fork : philo->index,
 		wrapped_fork == 0 ? philo->index : wrapped_fork,
 	};

@@ -8,8 +8,6 @@
 
 typedef struct s_table t_table;
 
-// TODO: Use uint64_t instead of size_t to ensure cross-platform compatibility
-
 typedef struct	s_philo
 {
 	pthread_mutex_t	lock;
