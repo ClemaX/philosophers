@@ -1,11 +1,10 @@
 #include <table.h>
 
-// TODO: Replace printfs with writes
-
 void			show_usage(const char *name)
 {
-	dprintf(2, "Usage:	%s seats time_to_die time_to_eat time_to_sleep [appetite]\n",
-		name);
+	write(2, MSG_EUSAGE_PREFIX, sizeof(MSG_EUSAGE_PREFIX) - 1);
+	write(2, name, ft_strlen(name));
+	write(2, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
 }
 
 bool			table_running(t_table *table)
@@ -37,7 +36,7 @@ bool			table_new(t_table *table, int ac, char **av)
 			}
 			free(table->philos);
 		}
-		perror("malloc");
+		write(STDERR_FILENO, MSG_EALLOC, sizeof(MSG_EALLOC) - 1);
 	}
 	else
 		show_usage(av[0]);
@@ -84,7 +83,6 @@ bool			table_set(t_table *table)
 		if (!err)
 			return (true);
 	}
-	dprintf(STDERR_FILENO, "pthread_mutex_init: (%d)%s\n", err, strerror(err));
 	return (false);
 }
 
@@ -102,12 +100,7 @@ bool			table_start(t_table *table)
 	&& !(err = pthread_create(&table->philos[i].tid, NULL, &philo_thread, &table->philos[i]))
 	&& !(err = pthread_create(&table->observers[i], NULL, &observer_thread, &table->philos[i])))
 		i++;
-	if (err)
-	{
-		dprintf(STDERR_FILENO, "pthread_create: (%d)%s\n", err, strerror(err));
-		return (false);
-	}
-	return (true);
+	return (!err);
 }
 
 bool			table_join(t_table *table)
@@ -120,10 +113,5 @@ bool			table_join(t_table *table)
 	while (i < table->seats
 	&& !(err = pthread_join(table->observers[i], NULL)))
 		i++;
-	if (err)
-	{
-		dprintf(STDERR_FILENO, "pthread_join: (%d)%s\n", err, strerror(err));
-		return (false);
-	}
-	return (true);
+	return (!err);
 }

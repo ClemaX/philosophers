@@ -37,7 +37,6 @@ bool	philo_alive(t_philo *philo)
 }
 */
 
-// TODO: Issue when philosophers starve, waiting for a fork
 // TODO: Forks should be initialized at the start since these are runtime-constants
 // TODO: Maybe reject single dining philosopher
 bool	philo_eat(t_philo *philo)
@@ -105,7 +104,6 @@ bool	philo_think(t_philo *philo)
 	return (false);
 }
 
-// TODO: End simulation on philosopher death
 void	*philo_thread(void *data)
 {
 	t_philo *const	philo = data;

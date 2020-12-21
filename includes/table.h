@@ -13,9 +13,14 @@
 # include <philo.h>
 # include <observer.h>
 
-typedef struct	s_philo	t_philo;
+# define	MSG_EUSAGE_PREFIX	"Usage: "
+# define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
 
-typedef struct	s_table
+# define	MSG_EALLOC	"Allocation error!\n"
+
+typedef struct s_philo	t_philo;
+
+typedef struct			s_table
 {
 	t_philo			*philos;
 	pthread_t		*observers;
@@ -31,15 +36,15 @@ typedef struct	s_table
 	t_time			time_to_die;
 	t_time			time_to_eat;
 	t_time			time_to_sleep;
-}				t_table;
+}						t_table;
 
 // TODO: Remove unused function definitions
-bool			table_running(t_table *table);
+bool					table_running(t_table *table);
 
-bool			table_new(t_table *table, int ac, char **av);
-bool			table_set(t_table *table);
-bool			table_start(t_table *table);
-void			table_clear(t_table *table);
-bool			table_join(t_table *table);
+bool					table_new(t_table *table, int ac, char **av);
+bool					table_set(t_table *table);
+bool					table_start(t_table *table);
+void					table_clear(t_table *table);
+bool					table_join(t_table *table);
 
 #endif
