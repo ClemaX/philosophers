@@ -11,7 +11,7 @@ typedef	uint64_t	t_time;
 t_time		clock_millis(void);
 
 uint64_t	atoui(const char *str);
-const char	*uitoa(uint64_t number);
+const char	*uitoa(uint64_t number, unsigned char *len);
 int			putui(int fd, uint64_t number);
 
 size_t		ft_strlen(const char *str);

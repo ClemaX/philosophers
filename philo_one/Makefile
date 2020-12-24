@@ -21,7 +21,9 @@ SRCS = $(addprefix $(SRCDIR)/,\
 	observer.c\
 	philo.c\
 	table.c\
-	utils.c\
+	utils_clock.c\
+	utils_int.c\
+	utils_str.c\
 )
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
