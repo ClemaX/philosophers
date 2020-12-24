@@ -1,13 +1,13 @@
 #include <table.h>
 
-void			show_usage(const char *name)
+void		show_usage(const char *name)
 {
 	write(2, MSG_EUSAGE_PREFIX, sizeof(MSG_EUSAGE_PREFIX) - 1);
 	write(2, name, ft_strlen(name));
 	write(2, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
 }
 
-bool			table_running(void)
+bool		table_running(void)
 {
 	bool	running;
 
@@ -17,7 +17,7 @@ bool			table_running(void)
 	return (running);
 }
 
-bool			table_new(t_philo **philos, int ac, char **av)
+bool		table_new(t_philo **philos, int ac, char **av)
 {
 	g_table.appetite = 0;
 	if ((ac == 5 || (ac == 6 && (g_table.appetite = atoui(av[5]))))
@@ -39,7 +39,7 @@ bool			table_new(t_philo **philos, int ac, char **av)
 	return (false);
 }
 
-void			table_del(t_philo **philos)
+void		table_del(t_philo **philos)
 {
 	uint64_t	i;
 
@@ -58,7 +58,7 @@ void			table_del(t_philo **philos)
 }
 
 // TODO: Handle only memory allocation errors
-bool			table_set(t_philo *philos)
+static bool	table_set(t_philo *philos)
 {
 	uint64_t	i;
 	int			err;
@@ -79,12 +79,13 @@ bool			table_set(t_philo *philos)
 	return (false);
 }
 
-bool			table_start(t_philo *philos)
+bool		table_start(t_philo *philos)
 {
 	uint64_t			i;
 	int					err;
 
-	table_set(philos);
+	if (!table_set(philos))
+		return (false);
 	i = 0;
 	err = 0;
 	g_table.running = true;
@@ -96,7 +97,7 @@ bool			table_start(t_philo *philos)
 	return (!err);
 }
 
-bool			table_join(t_philo *philos)
+bool		table_join(t_philo *philos)
 {
 	uint64_t	i;
 	int			err;
