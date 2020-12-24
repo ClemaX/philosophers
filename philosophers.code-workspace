@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "philo_one"
+		},
+		{
+			"path": "philo_two"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"sstream": "c",
+			"bitset": "cpp"
+		}
+	}
+}
