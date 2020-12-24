@@ -1,5 +1,6 @@
 #include <philo.h>
 
+// TODO: Fix single dining philosopher
 bool	philo_take_forks(t_philo *philo)
 {
 	bool	running;

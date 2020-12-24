@@ -3,17 +3,15 @@
 
 # include <pthread.h>
 
-# include <utils.h>
 # include <table.h>
-
-typedef struct s_table t_table;
+# include <utils.h>
 
 typedef struct	s_philo
 {
 	pthread_mutex_t	lock;
-	t_table			*table;
 	uint64_t		index;
 	pthread_t		tid;
+	pthread_t		tid_observer;
 	t_time			time_die;
 	uint64_t		times_ate;
 }				t_philo;

@@ -22,10 +22,6 @@ typedef struct s_philo	t_philo;
 
 typedef struct			s_table
 {
-	t_philo			*philos;
-	pthread_t		*observers;
-	// TODO: Substruct table_shared
-	// TODO: Otherwise consider adding observer tid to philo struct
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	lock_write;
 	pthread_mutex_t	lock_run;
@@ -38,13 +34,15 @@ typedef struct			s_table
 	t_time			time_to_sleep;
 }						t_table;
 
-// TODO: Remove unused function definitions
-bool					table_running(t_table *table);
+extern t_table			g_table;
 
-bool					table_new(t_table *table, int ac, char **av);
-bool					table_set(t_table *table);
-bool					table_start(t_table *table);
-void					table_clear(t_table *table);
-bool					table_join(t_table *table);
+// TODO: Remove unused function definitions
+bool					table_running(void);
+
+bool					table_new(t_philo **philos, int ac, char **av);
+void					table_del(t_philo **philos);
+
+bool					table_start(t_philo *philos);
+bool					table_join(t_philo *philos);
 
 #endif

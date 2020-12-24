@@ -22,19 +22,20 @@ void	*observer_thread(void *data)
 	satisfied = false;
 	while (running && !satisfied && alive)
 	{
-		usleep(philo->table->time_to_die * 1000);
+		// TODO: Must be an error
+		usleep(g_table.time_to_die * 1000);
 		pthread_mutex_lock(&philo->lock);
-		if (!(satisfied = philo->times_ate == philo->table->appetite)
+		if (!(satisfied = philo->times_ate == g_table.appetite)
 		&& !(alive = (clock_millis() < philo->time_die)))
 		{
-			pthread_mutex_lock(&philo->table->lock_run);
-			if (philo->table->running)
+			pthread_mutex_lock(&g_table.lock_run);
+			if (g_table.running)
 			{
 				philo_log(philo, "died");
-				philo->table->running = false;
+				g_table.running = false;
 			}
-			running = philo->table->running;
-			pthread_mutex_unlock(&philo->table->lock_run);
+			running = g_table.running;
+			pthread_mutex_unlock(&g_table.lock_run);
 		}
 		pthread_mutex_unlock(&philo->lock);
 	}
