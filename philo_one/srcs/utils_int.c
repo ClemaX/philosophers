@@ -1,6 +1,6 @@
 #include <utils.h>
 
-static unsigned char	uilen(uint64_t number)
+static unsigned char	uilen(t_uint number)
 {
 	unsigned char	len;
 
@@ -10,7 +10,7 @@ static unsigned char	uilen(uint64_t number)
 	return (len);
 }
 
-const char				*uitoa(uint64_t number, unsigned char *len_dest)
+const char				*uitoa(t_uint number, unsigned char *len_dest)
 {
 	static char		str[21];
 	unsigned char	len;
@@ -27,7 +27,7 @@ const char				*uitoa(uint64_t number, unsigned char *len_dest)
 	return (str);
 }
 
-int						putui(int fd, uint64_t number)
+int						putui(int fd, t_uint number)
 {
 	unsigned char		len;
 	const char *const	str = uitoa(number, &len);
@@ -35,9 +35,9 @@ int						putui(int fd, uint64_t number)
 	return (write(fd, str, len));
 }
 
-uint64_t				atoui(const char *str)
+t_uint					atoui(const char *str)
 {
-	uint64_t	i;
+	t_uint	i;
 
 	i = 0;
 	while (*str >= '0' && *str <= '9' && i < INT64_MAX)

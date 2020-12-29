@@ -1,12 +1,5 @@
 #include <table.h>
 
-void		show_usage(const char *name)
-{
-	write(2, MSG_EUSAGE_PREFIX, sizeof(MSG_EUSAGE_PREFIX) - 1);
-	write(2, name, ft_strlen(name));
-	write(2, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
-}
-
 bool		table_running(void)
 {
 	bool	running;
@@ -17,14 +10,14 @@ bool		table_running(void)
 	return (running);
 }
 
-bool		table_new(t_philo **philos, int ac, char **av)
+bool		table_new(t_philo **philos, int ac, const char **av)
 {
 	g_table.appetite = 0;
 	if ((ac == 5 || (ac == 6 && (g_table.appetite = atoui(av[5]))))
-	&& (g_table.seats = atoui(av[1]))
-	&& (g_table.time_to_die = atoui(av[2]))
-	&& (g_table.time_to_eat = atoui(av[3]))
-	&& (g_table.time_to_sleep = atoui(av[4])))
+	&& (g_table.seats = atoui(av[1])) // TODO: > 1
+	&& (g_table.time_to_die = atoui(av[2])) // TODO: > 50
+	&& (g_table.time_to_eat = atoui(av[3])) // TODO: > 50
+	&& (g_table.time_to_sleep = atoui(av[4]))) // TODO: > 50
 	{
 		if ((*philos = malloc(sizeof(**philos) * g_table.seats)))
 		{
@@ -35,13 +28,13 @@ bool		table_new(t_philo **philos, int ac, char **av)
 		write(STDERR_FILENO, MSG_EALLOC, sizeof(MSG_EALLOC) - 1);
 	}
 	else
-		show_usage(av[0]);
+		table_show_usage(av[0]);
 	return (false);
 }
 
 void		table_del(t_philo **philos)
 {
-	uint64_t	i;
+	t_uint	i;
 
 	i = 0;
 	while (i < g_table.seats)
@@ -60,7 +53,7 @@ void		table_del(t_philo **philos)
 // TODO: Handle only memory allocation errors
 static bool	table_set(t_philo *philos)
 {
-	uint64_t	i;
+	t_uint	i;
 	int			err;
 
 	if (!(err = pthread_mutex_init(&g_table.lock_write, NULL))
@@ -68,20 +61,21 @@ static bool	table_set(t_philo *philos)
 	{
 		i = 0;
 		while (i < g_table.seats
-		&& !(err = pthread_mutex_init(&g_table.forks[i], NULL)))
-		{
-			philos[i].index = i;
+		&& !(err = pthread_mutex_init(&g_table.forks[i], NULL))
+		&& philo_set(&philos[i], i))
 			i++;
-		}
-		if (!err)
+		if (i == g_table.seats)
+		{
+			g_table.satisfied = 0;
 			return (true);
+		}
 	}
 	return (false);
 }
 
 bool		table_start(t_philo *philos)
 {
-	uint64_t			i;
+	t_uint			i;
 	int					err;
 
 	if (!table_set(philos))
@@ -89,17 +83,20 @@ bool		table_start(t_philo *philos)
 	i = 0;
 	err = 0;
 	g_table.running = true;
-	g_table.time_start = clock_millis();
-	while (i < g_table.seats
-	&& !(err = pthread_create(&philos[i].tid, NULL, &philo_thread, &philos[i]))
-	&& !(err = pthread_create(&philos[i].tid_observer, NULL, &observer_thread, &philos[i])))
+	g_table.time_start = time_millis();
+	while (i < g_table.seats)
+	{
+		philos[i].time_die = g_table.time_start + g_table.time_to_die;
+		err += pthread_create(&philos[i].tid, NULL, &philo_thread, &philos[i]);
+		err += pthread_create(&philos[i].tid_observer, NULL, &observer_thread, &philos[i]);
 		i++;
+	}
 	return (!err);
 }
 
 bool		table_join(t_philo *philos)
 {
-	uint64_t	i;
+	t_uint	i;
 	int			err;
 
 	i = 0;
@@ -107,5 +104,7 @@ bool		table_join(t_philo *philos)
 	while (i < g_table.seats
 	&& !(err = pthread_join(philos[i].tid_observer, NULL)))
 		i++;
+	if (err)
+		table_perror("pthread_join", err);
 	return (!err);
 }

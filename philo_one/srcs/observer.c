@@ -1,47 +1,32 @@
 #include <observer.h>
 
-/*
-**	Observe a dining philosopher.
-**
-**	data: A pointer to the philosopher to be observed.
-**
-**	0. Initialize the philosopher's death time.
-**	1. Wait until the philosopher should die.
-**	2. Check if the table stopped running or the philosopher died.
-*/
-
 void	*observer_thread(void *data)
 {
-	t_philo	*const	philo = data;
-	bool			alive;
+	t_philo *const	philo = data;
+	t_time			time_die;
 	bool			running;
-	bool			satisfied;
 
-	alive = true;
 	running = true;
-	satisfied = false;
-	while (running && !satisfied && alive)
+	while (running)
 	{
-		// TODO: Must be an error
-		usleep(g_table.time_to_die * 1000);
 		pthread_mutex_lock(&philo->lock);
-		if (!(satisfied = philo->times_ate == g_table.appetite)
-		&& !(alive = (clock_millis() < philo->time_die)))
+		time_die = philo->time_die;
+		pthread_mutex_unlock(&philo->lock);
+		sleep_until(time_die);
+		pthread_mutex_lock(&philo->lock);
+		if (time_die == philo->time_die)
 		{
 			pthread_mutex_lock(&g_table.lock_run);
 			if (g_table.running)
 			{
-				philo_log(philo, "died");
+				table_log(philo, "died");
 				g_table.running = false;
 			}
-			running = g_table.running;
 			pthread_mutex_unlock(&g_table.lock_run);
+			running = false;
 		}
 		pthread_mutex_unlock(&philo->lock);
 	}
-	// TODO: Remove this debug log
-	if (satisfied)
-		philo_log(philo, "is satisfied");
-	pthread_join(philo->tid, NULL);
-	return (NULL);
+	pthread_join(philo->tid, &data);
+	return (data);
 }
