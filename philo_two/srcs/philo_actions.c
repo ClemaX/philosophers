@@ -1,25 +1,31 @@
 #include <philo.h>
 
 // TODO: Fix single dining philosopher
-bool	philo_take_forks(t_philo *philo)
+static bool	philo_take_forks(t_philo *philo)
 {
-	bool	running;
-
-	running = true;
-	while (running && table_running(philo->table))
+	if (table_running())
 	{
-		sem_wait(philo->table->lock_fork_count);
-		if ((running = table_running(philo->table)) && philo->table->fork_count >= 2)
+		sem_wait(g_table.fork_count);
+		if (table_running())
 		{
-			philo->table->fork_count -= 2;
-			philo_log(philo, "has taken a fork");
-			philo_log(philo, "has taken a fork");
-			sem_post(philo->table->lock_fork_count);
-			return (true);
+			table_log(philo, "has taken a fork");
+			sem_wait(g_table.fork_count);
+			if (table_running())
+			{
+				table_log(philo, "has taken a fork");
+				return (true);
+			}
+			sem_post(g_table.fork_count);
 		}
-		sem_post(philo->table->lock_fork_count);
+		sem_post(g_table.fork_count);
 	}
 	return (false);
+}
+
+static void	philo_drop_forks(void)
+{
+	sem_post(g_table.fork_count);
+	sem_post(g_table.fork_count);
 }
 
 bool	philo_eat(t_philo *philo)
@@ -29,45 +35,51 @@ bool	philo_eat(t_philo *philo)
 	if ((running = philo_take_forks(philo)))
 	{
 		sem_wait(philo->lock);
-		if ((running = table_running(philo->table)))
+		philo->time_die = time_millis() + g_table.time_to_die;
+		sem_post(philo->lock);
+		// TODO: May need to check running state again...
+		running = philo_sleep(philo, g_table.time_to_eat, "is eating");
+		philo_drop_forks();
+		if (running && g_table.appetite
+		&& philo->times_ate < g_table.appetite
+		&& ++philo->times_ate == g_table.appetite)
 		{
-			philo_log(philo, "is eating");
-			if (philo->table->appetite)
-				running = ++philo->times_ate < philo->table->appetite;
-			philo->time_die = clock_millis() + philo->table->time_to_die;
-			sem_post(philo->lock);
-			usleep(philo->table->time_to_eat * 1000);
+			sem_wait(g_table.lock_run);
+			if (++g_table.satisfied == g_table.seats)
+			{
+				g_table.running = false;
+				running = false;
+			}
+			sem_post(g_table.lock_run);
 		}
-		else
-			sem_post(philo->lock);
 	}
 	return (running);
 }
 
-bool	philo_sleep(t_philo *philo)
+bool		philo_sleep(t_philo *philo, t_time duration, const char *message)
 {
+	bool	running;
 	t_time	now;
+	t_time	time_die;
 
-	if (table_running(philo->table))
+	if ((running = table_running()))
 	{
-
-		// TODO: Remove this
-		now = clock_millis();
-		if ((now + philo->table->time_to_sleep) < philo->time_die)
-		{
-			philo_log(philo, "is sleeping");
-			usleep(philo->table->time_to_sleep * 1000);
-			return (true);
-		}
+		sem_wait(philo->lock);
+		time_die = philo->time_die;
+		sem_post(philo->lock);
+		now = table_log(philo, message);
+		if (now + duration > time_die)
+			duration = time_die - now;
+		usleep(duration * 1000);
 	}
-	return (false);
+	return (running);
 }
 
 bool	philo_think(t_philo *philo)
 {
 	bool	running;
 
-	if ((running = table_running(philo->table)))
-		philo_log(philo, "is thinking");
+	if ((running = table_running()))
+		table_log(philo, "is thinking");
 	return (running);
 }

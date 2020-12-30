@@ -17,14 +17,15 @@ DFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.d
 LDFLAGS = -lpthread -g3
 
 SRCS = $(addprefix $(SRCDIR)/,\
-	main.c\
+	philosophers.c\
 	observer.c\
 	philo.c\
 	philo_actions.c\
 	table.c\
+	table_utils.c\
 	utils_int.c\
 	utils_str.c\
-	utils_clock.c\
+	utils_time.c\
 )
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

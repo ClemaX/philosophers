@@ -1,34 +1,6 @@
 #include <philo.h>
 
-void		philo_log(t_philo *philo, const char *message)
-{
-	const t_time	now = clock_millis() - philo->table->time_start;
-
-	sem_wait(philo->table->lock_write);
-	putui(STDOUT_FILENO, now);
-	write(STDOUT_FILENO, " ", 1);
-	putui(STDOUT_FILENO, philo->index + 1);
-	write(STDOUT_FILENO, " ", 1);
-	write(STDOUT_FILENO, message, ft_strlen(message));
-	write(STDOUT_FILENO, "\n", 1);
-	sem_post(philo->table->lock_write);
-}
-
-void		*philo_thread(void *data)
-{
-	t_philo *const	philo = data;
-
-	// FIXME: Lock is null!
-	sem_wait(philo->lock);
-	philo->times_ate = 0;
-	philo->time_die = clock_millis() + philo->table->time_to_die;
-	sem_post(philo->lock);
-	while (philo_eat(philo) && philo_sleep(philo) && philo_think(philo))
-		;
-	return (NULL);
-}
-
-const char	*philo_sem_name(uint64_t index)
+static const char	*philo_sem_name(t_uint index)
 {
 	static char			name[NAME_MAX - 3] = SEM_PHILO_PREFIX;
 	char *const			suffix = name + sizeof(SEM_PHILO_PREFIX) - 1;
@@ -43,17 +15,18 @@ const char	*philo_sem_name(uint64_t index)
 	return (name);
 }
 
-bool		philo_new(t_philo *philo, t_table *table, uint64_t index)
+bool		philo_set(t_philo *philo, t_uint index)
 {
 	const char *const	sem_name = philo_sem_name(index);
 
-	philo->index = index;
 	if ((philo->lock = sem_open(sem_name, SEM_OFLAGS, SEM_MODE, 1)) != SEM_FAILED)
 	{
-		philo->table = table;
+		philo->index = index;
+		philo->times_ate = 0;
+		philo->time_die = 0;
 		return (true);
 	}
-	perror(sem_name);
+	table_perror(sem_name, errno);
 	return (false);
 }
 
@@ -61,4 +34,16 @@ void		philo_del(t_philo *philo)
 {
 	sem_close(philo->lock);
 	sem_unlink(philo_sem_name(philo->index));
+}
+
+
+void		*philo_thread(void *data)
+{
+	t_philo *const	philo = data;
+
+	while (philo_eat(philo)
+	&& philo_sleep(philo, g_table.time_to_sleep, "is sleeping")
+	&& philo_think(philo))
+		;
+	return (NULL);
 }

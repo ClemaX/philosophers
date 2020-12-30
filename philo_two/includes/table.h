@@ -1,28 +1,26 @@
 #ifndef TABLE_H
 # define TABLE_H
 
-# include <unistd.h>
 # include <stdlib.h>
 # include <stdint.h>
 # include <stdbool.h>
-# include <stdio.h>
-# include <inttypes.h>
-# include <string.h>
-# include <fcntl.h>
-// TODO: Cross-platform limits (NAME_MAX)
+
 # include <sys/stat.h>
 # include <limits.h>
 
+# include <fcntl.h>
 # include <semaphore.h>
 
 # include <utils.h>
 # include <philo.h>
 # include <observer.h>
 
+# ifndef	NAME_MAX
+#  define	NAME_MAX 255
+# endif
+
 # define	MSG_EUSAGE_PREFIX	"Usage: "
 # define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
-
-# define	MSG_EALLOC			"Allocation error!\n"
 
 # define	SEM_OFLAGS			O_CREAT
 # define	SEM_MODE			S_IRUSR | S_IWUSR | S_IXUSR
@@ -34,30 +32,31 @@ typedef struct s_philo	t_philo;
 
 typedef struct			s_table
 {
-	t_philo			*philos;
-	pthread_t		*observers;
-	// TODO: Substruct table_shared
-	// TODO: Otherwise consider adding observer tid to philo struct
-	sem_t			*lock_fork_count;
+	bool			running;
+	sem_t			*fork_count;
 	sem_t			*lock_write;
 	sem_t			*lock_run;
-	uint64_t		fork_count;
-	bool			running;
-	uint64_t		seats;
-	uint64_t		appetite;
+	t_uint			seats;
+	t_uint			appetite;
+	t_uint			satisfied;
 	t_time			time_start;
 	t_time			time_to_die;
 	t_time			time_to_eat;
 	t_time			time_to_sleep;
 }						t_table;
 
-// TODO: Remove unused function definitions
-bool					table_running(t_table *table);
+extern t_table			g_table;
 
-bool					table_new(t_table *table, int ac, char **av);
-bool					table_set(t_table *table);
-bool					table_start(t_table *table);
-void					table_clear(t_table *table);
-bool					table_join(t_table *table);
+void					table_show_usage(const char *name);
+void					table_perror(const char *label, int err);
+t_time					table_log(t_philo *philo, const char *message);
+
+bool					table_running(void);
+
+bool					table_new(t_philo **philos, int ac, const char **av);
+void					table_del(t_philo **philos);
+
+bool					table_start(t_philo *philos);
+bool					table_join(t_philo *philos);
 
 #endif
