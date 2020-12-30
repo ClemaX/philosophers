@@ -4,8 +4,8 @@
 # include <stdbool.h>
 # include <pthread.h>
 
-# include <table.h>
 # include <utils.h>
+# include <table.h>
 
 typedef struct	s_philo
 {
@@ -18,6 +18,9 @@ typedef struct	s_philo
 	t_uint			times_ate;
 }				t_philo;
 
+/*
+**		philo_actions.c
+*/
 bool	philo_eat(t_philo *philo);
 bool	philo_sleep(t_philo *philo, t_time duration, const char *message);
 bool	philo_think(t_philo *philo);

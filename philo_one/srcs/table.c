@@ -1,15 +1,5 @@
 #include <table.h>
 
-bool		table_running(void)
-{
-	bool	running;
-
-	pthread_mutex_lock(&g_table.lock_run);
-	running = g_table.running;
-	pthread_mutex_unlock(&g_table.lock_run);
-	return (running);
-}
-
 bool		table_new(t_philo **philos, int ac, const char **av)
 {
 	g_table.appetite = 0;
@@ -25,7 +15,7 @@ bool		table_new(t_philo **philos, int ac, const char **av)
 				return (true);
 			free(*philos);
 		}
-		write(STDERR_FILENO, MSG_EALLOC, sizeof(MSG_EALLOC) - 1);
+		table_perror("table: malloc", errno);
 	}
 	else
 		table_show_usage(av[0]);
@@ -50,16 +40,15 @@ void		table_del(t_philo **philos)
 	*philos = NULL;
 }
 
-// TODO: Handle only memory allocation errors
 static bool	table_set(t_philo *philos)
 {
 	t_uint	i;
-	int			err;
+	int		err;
 
+	i = 0;
 	if (!(err = pthread_mutex_init(&g_table.lock_write, NULL))
 	&& !(err = pthread_mutex_init(&g_table.lock_run, NULL)))
 	{
-		i = 0;
 		while (i < g_table.seats
 		&& !(err = pthread_mutex_init(&g_table.forks[i], NULL))
 		&& philo_set(&philos[i], i))
@@ -70,6 +59,8 @@ static bool	table_set(t_philo *philos)
 			return (true);
 		}
 	}
+	g_table.seats = i;
+	table_perror("table: pthread_mutex_init", err);
 	return (false);
 }
 
@@ -84,13 +75,17 @@ bool		table_start(t_philo *philos)
 	err = 0;
 	g_table.running = true;
 	g_table.time_start = time_millis();
-	while (i < g_table.seats)
+	while (!err && i < g_table.seats)
 	{
 		philos[i].time_die = g_table.time_start + g_table.time_to_die;
-		err += pthread_create(&philos[i].tid, NULL, &philo_thread, &philos[i]);
-		err += pthread_create(&philos[i].tid_observer, NULL, &observer_thread, &philos[i]);
+		if (!(err = pthread_create(&philos[i].tid, NULL,
+			&philo_thread, &philos[i])))
+			err = pthread_create(&philos[i].tid_observer, NULL,
+				&observer_thread, &philos[i]);
 		i++;
 	}
+	if (i != g_table.seats)
+		table_perror("table: pthread_create", err);
 	return (!err);
 }
 
@@ -104,7 +99,7 @@ bool		table_join(t_philo *philos)
 	while (i < g_table.seats
 	&& !(err = pthread_join(philos[i].tid_observer, NULL)))
 		i++;
-	if (err)
+	if (i != g_table.seats)
 		table_perror("pthread_join", err);
 	return (!err);
 }

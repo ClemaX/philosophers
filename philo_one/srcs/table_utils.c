@@ -2,9 +2,9 @@
 
 void	table_show_usage(const char *name)
 {
-	write(2, MSG_EUSAGE_PREFIX, sizeof(MSG_EUSAGE_PREFIX) - 1);
-	write(2, name, ft_strlen(name));
-	write(2, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
+	write(STDERR_FILENO, MSG_EUSAGE_PREFIX, sizeof(MSG_EUSAGE_PREFIX) - 1);
+	write(STDERR_FILENO, name, ft_strlen(name));
+	write(STDERR_FILENO, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
 }
 
 t_time	table_log(t_philo *philo, const char *message)
@@ -26,14 +26,24 @@ void	table_perror(const char *msg, int err)
 {
 	const char *const	err_msg = ft_strerror(err);
 
-	write(2, msg, ft_strlen(msg));
-	write(2, ": ", 2);
+	write(STDERR_FILENO, msg, ft_strlen(msg));
+	write(STDERR_FILENO, ": ", 2);
 	if (err_msg)
-		write(2, err_msg, ft_strlen(err_msg));
+		write(STDERR_FILENO, err_msg, ft_strlen(err_msg));
 	else
 	{
-		write(2, "Unknown error: ", 15);
-		putui(2, (t_uint)err);
+		write(STDERR_FILENO, "Unknown error: ", 15);
+		putui(STDERR_FILENO, (t_uint)err);
 	}
-	write(2, "\n", 1);
+	write(STDERR_FILENO, "\n", 1);
+}
+
+bool	table_running(void)
+{
+	bool	running;
+
+	pthread_mutex_lock(&g_table.lock_run);
+	running = g_table.running;
+	pthread_mutex_unlock(&g_table.lock_run);
+	return (running);
 }
