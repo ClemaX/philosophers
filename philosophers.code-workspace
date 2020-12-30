@@ -5,12 +5,13 @@
 		},
 		{
 			"path": "philo_two"
+		},
+		{
+			"path": "philo_three"
 		}
 	],
 	"settings": {
 		"files.associations": {
-			"sstream": "c",
-			"bitset": "cpp"
 		}
 	}
 }
