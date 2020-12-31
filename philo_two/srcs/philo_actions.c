@@ -51,6 +51,7 @@ bool	philo_eat(t_philo *philo)
 				running = false;
 			}
 			sem_post(g_table.lock_run);
+			table_log(philo, "is satisfied");
 		}
 	}
 	return (running);
