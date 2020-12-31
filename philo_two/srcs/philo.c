@@ -19,6 +19,7 @@ bool		philo_set(t_philo *philo, t_uint index)
 {
 	const char *const	sem_name = philo_sem_name(index);
 
+	sem_unlink(sem_name);
 	if ((philo->lock = sem_open(sem_name, SEM_OFLAGS, SEM_MODE, 1)) != SEM_FAILED)
 	{
 		philo->index = index;
@@ -41,6 +42,7 @@ void		*philo_thread(void *data)
 {
 	t_philo *const	philo = data;
 
+	table_log(philo, "is born");
 	while (philo_eat(philo)
 	&& philo_sleep(philo, g_table.time_to_sleep, "is sleeping")
 	&& philo_think(philo))

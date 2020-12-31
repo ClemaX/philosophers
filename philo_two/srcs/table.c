@@ -42,6 +42,9 @@ static bool		table_set(t_philo *philos)
 {
 	t_uint	i;
 
+	sem_unlink(SEM_FORK_COUNT);
+	sem_unlink(SEM_RUN);
+	sem_unlink(SEM_WRITE);
 	i = 0;
 	if ((g_table.fork_count = sem_open(SEM_FORK_COUNT, SEM_OFLAGS, SEM_MODE,
 		g_table.seats)) != SEM_FAILED)
