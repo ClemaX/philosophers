@@ -37,7 +37,6 @@ bool	philo_eat(t_philo *philo)
 		sem_wait(philo->lock);
 		philo->time_die = time_millis() + g_table.time_to_die;
 		sem_post(philo->lock);
-		// TODO: May need to check running state again...
 		running = philo_sleep(philo, g_table.time_to_eat, "is eating");
 		philo_drop_forks();
 		if (running && g_table.appetite
@@ -51,7 +50,6 @@ bool	philo_eat(t_philo *philo)
 				running = false;
 			}
 			sem_post(g_table.lock_run);
-			table_log(philo, "is satisfied");
 		}
 	}
 	return (running);

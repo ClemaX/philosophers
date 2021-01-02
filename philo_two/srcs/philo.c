@@ -42,7 +42,6 @@ void		*philo_thread(void *data)
 {
 	t_philo *const	philo = data;
 
-	table_log(philo, "is born");
 	while (philo_eat(philo)
 	&& philo_sleep(philo, g_table.time_to_sleep, "is sleeping")
 	&& philo_think(philo))
