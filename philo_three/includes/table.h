@@ -1,0 +1,64 @@
+#ifndef TABLE_H
+# define TABLE_H
+
+# include <stdlib.h>
+# include <stdint.h>
+# include <stdbool.h>
+# include <signal.h>
+
+# include <sys/stat.h>
+# include <limits.h>
+
+# include <fcntl.h>
+# include <semaphore.h>
+
+# include <utils.h>
+# include <philo.h>
+
+# ifndef	NAME_MAX
+#  define	NAME_MAX 255
+# endif
+
+# define	MSG_EUSAGE_PREFIX	"Usage: "
+# define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
+
+# define	SEM_OFLAGS			O_CREAT
+# define	SEM_MODE			S_IRUSR | S_IWUSR | S_IXUSR
+
+# define	SEM_FORKS			"/table_forks"
+# define	SEM_SATISFIED		"/table_satisfied"
+# define	SEM_WRITE			"/table_write"
+# define	SEM_RUN				"/table_run"
+
+typedef struct s_philo	t_philo;
+
+typedef struct			s_table
+{
+	bool			running;
+	sem_t			*lock_write;
+	sem_t			*lock_run;
+	sem_t			*count_forks;
+	sem_t			*count_satisified;
+	t_uint			seats;
+	t_uint			appetite;
+	t_time			time_start;
+	t_time			time_to_die;
+	t_time			time_to_eat;
+	t_time			time_to_sleep;
+}						t_table;
+
+extern t_table			g_table;
+
+void					table_show_usage(const char *name);
+void					table_perror(const char *label, int err);
+t_time					table_log(t_philo *philo, const char *message);
+
+bool					table_running(void);
+
+bool					table_new(t_philo **philos, int ac, const char **av);
+void					table_del(t_philo **philos);
+
+bool					table_start(t_philo *philos);
+bool					table_join(t_philo *philos);
+
+#endif
