@@ -29,7 +29,7 @@ void	table_perror(const char *msg, int err)
 	write(STDERR_FILENO, msg, ft_strlen(msg));
 	write(STDERR_FILENO, ": ", 2);
 	if (err_msg)
-		write(2, err_msg, ft_strlen(err_msg));
+		write(STDERR_FILENO, err_msg, ft_strlen(err_msg));
 	else
 	{
 		write(STDERR_FILENO, "Unknown error: ", 15);
