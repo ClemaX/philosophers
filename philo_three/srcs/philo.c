@@ -15,12 +15,13 @@ static const char	*philo_sem_name(t_uint index)
 	return (name);
 }
 
-bool		philo_set(t_philo *philo, t_uint index)
+bool				philo_set(t_philo *philo, t_uint index)
 {
 	const char *const	sem_name = philo_sem_name(index);
 
 	sem_unlink(sem_name);
-	if ((philo->lock = sem_open(sem_name, SEM_OFLAGS, SEM_MODE, 1)) != SEM_FAILED)
+	if ((philo->lock = sem_open(sem_name, SEM_OFLAGS, SEM_MODE, 1))
+	!= SEM_FAILED)
 	{
 		philo->index = index;
 		philo->times_ate = 0;
@@ -31,13 +32,13 @@ bool		philo_set(t_philo *philo, t_uint index)
 	return (false);
 }
 
-void		philo_del(t_philo *philo)
+void				philo_del(t_philo *philo)
 {
 	sem_close(philo->lock);
 	sem_unlink(philo_sem_name(philo->index));
 }
 
-bool		philo_start(t_philo *philo)
+bool				philo_start(t_philo *philo)
 {
 	if ((philo->pid = fork()) == 0)
 	{
@@ -58,7 +59,7 @@ bool		philo_start(t_philo *philo)
 	return (true);
 }
 
-void		*philo_thread(void *data)
+void				*philo_thread(void *data)
 {
 	t_philo *const	philo = data;
 	int				err;

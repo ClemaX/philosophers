@@ -20,7 +20,8 @@
 # endif
 
 # define	MSG_EUSAGE_PREFIX	"Usage: "
-# define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
+# define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep"\
+								" [appetite]\n"
 
 # define	SEM_OFLAGS			O_CREAT
 # define	SEM_MODE			S_IRUSR | S_IWUSR | S_IXUSR

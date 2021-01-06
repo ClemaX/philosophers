@@ -1,6 +1,6 @@
 #include <table.h>
 
-bool			table_new(t_philo **philos, int ac, const char **av)
+bool	table_new(t_philo **philos, int ac, const char **av)
 {
 	g_table.appetite = 0;
 	if ((ac == 5 || (ac == 6 && (g_table.appetite = atoui(av[5]))))
@@ -18,7 +18,7 @@ bool			table_new(t_philo **philos, int ac, const char **av)
 	return (false);
 }
 
-void			table_del(t_philo **philos)
+void	table_del(t_philo **philos)
 {
 	t_uint	i;
 
@@ -38,7 +38,7 @@ void			table_del(t_philo **philos)
 	g_table.lock_write = SEM_FAILED;
 }
 
-bool			table_set(t_philo *philos)
+bool	table_set(t_philo *philos)
 {
 	t_uint	i;
 
@@ -66,7 +66,7 @@ bool			table_set(t_philo *philos)
 	return (false);
 }
 
-bool			table_join(t_philo *philos)
+bool	table_join(t_philo *philos)
 {
 	t_uint	i;
 	int		status;

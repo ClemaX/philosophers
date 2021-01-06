@@ -18,7 +18,7 @@ static void	philo_drop_forks(void)
 	table_drop_fork();
 }
 
-bool	philo_eat(t_philo *philo)
+bool		philo_eat(t_philo *philo)
 {
 	bool	running;
 
@@ -56,7 +56,7 @@ bool		philo_sleep(t_philo *philo, t_time duration, const char *message)
 	return (running);
 }
 
-bool	philo_think(t_philo *philo)
+bool		philo_think(t_philo *philo)
 {
 	bool	running;
 
