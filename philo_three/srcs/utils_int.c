@@ -1,6 +1,6 @@
 #include <utils.h>
 
-static unsigned char	uilen(t_uint number)
+unsigned char	uilen(t_uint number)
 {
 	unsigned char	len;
 
@@ -10,7 +10,7 @@ static unsigned char	uilen(t_uint number)
 	return (len);
 }
 
-const char				*uitoa(t_uint number, unsigned char *len_dest)
+const char		*uitoa(t_uint number, unsigned char *len_dest)
 {
 	static char		str[21];
 	unsigned char	len;
@@ -27,7 +27,7 @@ const char				*uitoa(t_uint number, unsigned char *len_dest)
 	return (str);
 }
 
-int						putui(int fd, t_uint number, unsigned char fw)
+int				putui(int fd, t_uint number, unsigned char fw)
 {
 	static const int	pad_max = sizeof(UINT_PADDING) - 1;
 	unsigned char		len;
@@ -39,7 +39,7 @@ int						putui(int fd, t_uint number, unsigned char fw)
 	return (write(fd, str, len));
 }
 
-t_uint					atoui(const char *str)
+t_uint			atoui(const char *str)
 {
 	t_uint	i;
 

@@ -12,9 +12,9 @@ t_time	table_log(t_philo *philo, const char *message)
 	const t_time	now = time_millis() - g_table.time_start;
 
 	sem_wait(g_table.lock_write);
-	putui(STDOUT_FILENO, now, 8);
+	putui(STDOUT_FILENO, now, FW_TIMESTAMP);
 	write(STDOUT_FILENO, " ", 1);
-	putui(STDOUT_FILENO, philo->index + 1, 2);
+	putui(STDOUT_FILENO, philo->index + 1, g_table.fw_index);
 	write(STDOUT_FILENO, " ", 1);
 	write(STDOUT_FILENO, message, ft_strlen(message));
 	write(STDOUT_FILENO, "\n", 1);

@@ -19,6 +19,10 @@
 #  define	NAME_MAX 255
 # endif
 
+# ifndef	FW_TIMESTAMP
+#  define	FW_TIMESTAMP 8
+# endif
+
 # define	MSG_EUSAGE_PREFIX	"Usage: "
 # define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep"\
 								" [appetite]\n"
@@ -35,16 +39,17 @@ typedef struct s_philo	t_philo;
 
 typedef struct			s_table
 {
-	sem_t	*lock_write;
-	sem_t	*lock_run;
-	sem_t	*count_forks;
-	sem_t	*count_satisified;
-	t_uint	seats;
-	t_uint	appetite;
-	t_time	time_start;
-	t_time	time_to_die;
-	t_time	time_to_eat;
-	t_time	time_to_sleep;
+	sem_t			*lock_write;
+	sem_t			*lock_run;
+	sem_t			*count_forks;
+	sem_t			*count_satisified;
+	t_uint			seats;
+	t_uint			appetite;
+	t_time			time_start;
+	t_time			time_to_die;
+	t_time			time_to_eat;
+	t_time			time_to_sleep;
+	unsigned char	fw_index;
 }						t_table;
 
 extern t_table			g_table;
