@@ -7,6 +7,10 @@
 # include <stdint.h>
 # include <errno.h>
 
+# ifndef UINT_PADDING
+#  define	UINT_PADDING "00000000"
+# endif
+
 typedef	uint64_t	t_uint;
 typedef	t_uint		t_time;
 
@@ -27,7 +31,7 @@ void		sleep_until(t_time time);
 */
 t_uint		atoui(const char *str);
 const char	*uitoa(t_uint number, unsigned char *len);
-int			putui(int fd, t_uint number);
+int			putui(int fd, t_uint number, unsigned char field_width);
 
 /*
 **			utils_str.c
