@@ -12,7 +12,10 @@ bool		table_new(t_philo **philos, int ac, const char **av)
 		if ((*philos = malloc(sizeof(**philos) * g_table.seats)))
 		{
 			if ((g_table.forks = malloc(sizeof(*g_table.forks) * g_table.seats)))
+			{
+				g_table.fw_index = uilen(g_table.seats);
 				return (true);
+			}
 			free(*philos);
 		}
 		table_perror("table: malloc", errno);

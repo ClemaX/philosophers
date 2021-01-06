@@ -12,9 +12,9 @@ t_time	table_log(t_philo *philo, const char *message)
 	const t_time	now = time_millis() - g_table.time_start;
 
 	pthread_mutex_lock(&g_table.lock_write);
-	putui(STDOUT_FILENO, now);
+	putui(STDOUT_FILENO, now, FW_TIMESTAMP);
 	write(STDOUT_FILENO, " ", 1);
-	putui(STDOUT_FILENO, philo->index + 1);
+	putui(STDOUT_FILENO, philo->index + 1, g_table.fw_index);
 	write(STDOUT_FILENO, " ", 1);
 	write(STDOUT_FILENO, message, ft_strlen(message));
 	write(STDOUT_FILENO, "\n", 1);
@@ -33,7 +33,7 @@ void	table_perror(const char *msg, int err)
 	else
 	{
 		write(STDERR_FILENO, "Unknown error: ", 15);
-		putui(STDERR_FILENO, (t_uint)err);
+		putui(STDERR_FILENO, (t_uint)err, 0);
 	}
 	write(STDERR_FILENO, "\n", 1);
 }

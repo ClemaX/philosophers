@@ -13,6 +13,10 @@
 #  define	NAME_MAX 255
 # endif
 
+# ifndef	FW_TIMESTAMP
+#  define	FW_TIMESTAMP 8
+# endif
+
 # define	MSG_EUSAGE_PREFIX	"Usage: "
 # define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
 
@@ -29,6 +33,7 @@ typedef struct			s_table
 	t_time			time_to_die;
 	t_time			time_to_eat;
 	t_time			time_to_sleep;
+	unsigned char	fw_index;
 }						t_table;
 
 extern t_table			g_table;
