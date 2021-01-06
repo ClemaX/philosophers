@@ -38,7 +38,7 @@ void			table_del(t_philo **philos)
 	g_table.lock_write = SEM_FAILED;
 }
 
-static bool		table_set(t_philo *philos)
+bool			table_set(t_philo *philos)
 {
 	t_uint	i;
 
@@ -66,23 +66,6 @@ static bool		table_set(t_philo *philos)
 	return (false);
 }
 
-bool			table_start(t_philo *philos)
-{
-	t_uint	i;
-
-	if (!table_set(philos))
-		return (false);
-	i = 0;
-	g_table.running = true;
-	g_table.time_start = time_millis();
-	while (i < g_table.seats && philo_start(&philos[i]))
-	{
-		usleep(100);
-		i++;
-	}
-	return (i == g_table.seats);
-}
-
 bool			table_join(t_philo *philos)
 {
 	t_uint	i;
@@ -93,9 +76,6 @@ bool			table_join(t_philo *philos)
 		i++;
 	if (i != g_table.seats)
 		table_perror("table: sem_wait", errno);
-	// TODO: This seems to be broken
-	sem_wait(g_table.lock_run);
-	g_table.running = false;
 	i = 0;
 	while (i < g_table.seats && kill(philos[i].pid, SIGTERM) != -1)
 		i++;

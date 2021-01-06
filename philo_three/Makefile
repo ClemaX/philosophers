@@ -23,6 +23,7 @@ SRCS = $(addprefix $(SRCDIR)/,\
 	philo_actions.c\
 	table.c\
 	table_utils.c\
+	table_actions.c\
 	utils_int.c\
 	utils_str.c\
 	utils_time.c\

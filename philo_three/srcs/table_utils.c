@@ -37,13 +37,3 @@ void	table_perror(const char *msg, int err)
 	}
 	write(STDERR_FILENO, "\n", 1);
 }
-
-bool	table_running(void)
-{
-	bool	running;
-
-	sem_wait(g_table.lock_run);
-	running = g_table.running;
-	sem_post(g_table.lock_run);
-	return (running);
-}

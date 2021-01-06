@@ -13,13 +13,8 @@ static bool	observe_death(t_philo *philo)
 	if (!(running = time_die != philo->time_die))
 	{
 		sem_wait(g_table.lock_run);
-		if (g_table.running)
-		{
-			table_log(philo, "died");
-			g_table.running = false;
-			sem_post(g_table.count_satisified);
-		}
-		sem_post(g_table.lock_run);
+		table_log(philo, "died");
+		table_stop();
 	}
 	sem_post(philo->lock);
 	return (running);
