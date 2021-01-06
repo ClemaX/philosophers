@@ -3,29 +3,19 @@
 // TODO: Fix single dining philosopher
 static bool	philo_take_forks(t_philo *philo)
 {
-	if (table_running())
+	if (table_take_fork(philo))
 	{
-		sem_wait(g_table.count_forks);
-		if (table_running())
-		{
-			table_log(philo, "has taken a fork");
-			sem_wait(g_table.count_forks);
-			if (table_running())
-			{
-				table_log(philo, "has taken a fork");
-				return (true);
-			}
-			sem_post(g_table.count_forks);
-		}
-		sem_post(g_table.count_forks);
+		if (table_take_fork(philo))
+			return (true);
+		table_drop_fork();
 	}
 	return (false);
 }
 
 static void	philo_drop_forks(void)
 {
-	sem_post(g_table.count_forks);
-	sem_post(g_table.count_forks);
+	table_drop_fork();
+	table_drop_fork();
 }
 
 bool	philo_eat(t_philo *philo)

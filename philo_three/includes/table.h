@@ -68,6 +68,8 @@ bool					table_join(t_philo *philos);
 */
 bool					table_start(t_philo *philos);
 void					table_stop(void);
+bool					table_take_fork(t_philo *philo);
+void					table_drop_fork(void);
 bool					table_running(void);
 
 #endif

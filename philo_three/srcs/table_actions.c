@@ -32,3 +32,19 @@ bool	table_running(void)
 	return (true);
 }
 
+bool	table_take_fork(t_philo *philo)
+{
+	bool	running;
+
+	sem_wait(g_table.count_forks);
+	if ((running = table_running()))
+		table_log(philo, "has taken a fork");
+	else
+		sem_post(g_table.count_forks);
+	return (running);
+}
+
+void	table_drop_fork(void)
+{
+	sem_post(g_table.count_forks);
+}
