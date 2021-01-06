@@ -10,7 +10,10 @@ bool			table_new(t_philo **philos, int ac, const char **av)
 	&& (g_table.time_to_sleep = atoui(av[4])))
 	{
 		if ((*philos = malloc(sizeof(**philos) * g_table.seats)))
+		{
+			g_table.fw_index = uilen(g_table.seats);
 			return (true);
+		}
 		table_perror("table: malloc", errno);
 	}
 	else
