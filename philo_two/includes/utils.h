@@ -7,7 +7,7 @@
 # include <stdint.h>
 # include <errno.h>
 
-# ifndef UINT_PADDING
+# ifndef	UINT_PADDING
 #  define	UINT_PADDING "00000000"
 # endif
 
