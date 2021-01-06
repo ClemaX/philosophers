@@ -77,12 +77,13 @@ bool	table_join(t_philo *philos)
 	i = 0;
 	while (i < g_table.seats && sem_wait(g_table.count_satisified) != -1)
 		i++;
+	sem_wait(g_table.lock_write);
 	if (i != g_table.seats)
 		table_perror("table: sem_wait", errno);
 	i = 0;
 	while (i < g_table.seats && kill(philos[i].pid, SIGTERM) != -1)
 		i++;
-	sem_post(g_table.lock_run);
+	sem_post(g_table.lock_write);
 	if (i != g_table.seats)
 	{
 		table_perror("table: kill", errno);
