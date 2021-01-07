@@ -7,8 +7,8 @@
 # include <stdint.h>
 # include <errno.h>
 
-# ifndef	UINT_PADDING
-#  define	UINT_PADDING "00000000"
+# ifndef UINT_PADDING
+#  define UINT_PADDING "00000000"
 # endif
 
 typedef	uint64_t	t_uint;

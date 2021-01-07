@@ -9,16 +9,18 @@
 # include <philo.h>
 # include <observer.h>
 
-# ifndef	NAME_MAX
-#  define	NAME_MAX 255
+# ifndef NAME_MAX
+#  define NAME_MAX 255
 # endif
 
-# ifndef	FW_TIMESTAMP
-#  define	FW_TIMESTAMP 8
+# ifndef FW_TIMESTAMP
+#  define FW_TIMESTAMP 8
 # endif
 
-# define	MSG_EUSAGE_PREFIX	"Usage: "
-# define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
+# define MSG_EUSAGE_PREFIX	"Usage: "
+# define MSG_EUSAGE_ARGS	" seats time_to_die time_to_eat time_to_sleep"
+# define MSG_EUSAGE_OPTS	" [appetite]"
+# define MSG_EUSAGE_SUFFIX	"\n"
 
 typedef struct			s_table
 {

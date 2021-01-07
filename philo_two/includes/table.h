@@ -15,22 +15,25 @@
 # include <philo.h>
 # include <observer.h>
 
-# ifndef	NAME_MAX
-#  define	NAME_MAX 255
+# ifndef NAME_MAX
+#  define NAME_MAX 255
 # endif
 
-# ifndef	FW_TIMESTAMP
-#  define	FW_TIMESTAMP 8
+# ifndef FW_TIMESTAMP
+#  define FW_TIMESTAMP 8
 # endif
 
-# define	MSG_EUSAGE_PREFIX	"Usage: "
-# define	MSG_EUSAGE_SUFFIX	" seats time_to_die time_to_eat time_to_sleep [appetite]\n"
+# define MSG_EUSAGE_PREFIX	"Usage: "
+# define MSG_EUSAGE_ARGS	" seats time_to_die time_to_eat time_to_sleep"
+# define MSG_EUSAGE_OPTS	" [appetite]"
+# define MSG_EUSAGE_SUFFIX	"\n"
 
-# define	SEM_OFLAGS			O_CREAT
-# define	SEM_MODE			S_IRUSR | S_IWUSR | S_IXUSR
-# define	SEM_FORK_COUNT		"/table_fork_count"
-# define	SEM_WRITE			"/table_write"
-# define	SEM_RUN				"/table_run"
+# define SEM_OFLAGS			O_CREAT
+# define SEM_MODE			0000700
+
+# define SEM_FORK_COUNT		"/table_forks"
+# define SEM_WRITE			"/table_write"
+# define SEM_RUN			"/table_run"
 
 typedef struct s_philo	t_philo;
 

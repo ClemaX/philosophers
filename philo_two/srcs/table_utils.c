@@ -4,6 +4,8 @@ void	table_show_usage(const char *name)
 {
 	write(STDERR_FILENO, MSG_EUSAGE_PREFIX, sizeof(MSG_EUSAGE_PREFIX) - 1);
 	write(STDERR_FILENO, name, ft_strlen(name));
+	write(STDERR_FILENO, MSG_EUSAGE_ARGS, sizeof(MSG_EUSAGE_ARGS) - 1);
+	write(STDERR_FILENO, MSG_EUSAGE_OPTS, sizeof(MSG_EUSAGE_OPTS) - 1);
 	write(STDERR_FILENO, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
 }
 
