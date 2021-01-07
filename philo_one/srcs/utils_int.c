@@ -46,5 +46,5 @@ t_uint			atoui(const char *str)
 	i = 0;
 	while (*str >= '0' && *str <= '9' && i < INT64_MAX)
 		i = i * 10 + *str++ - '0';
-	return ((i >= INT64_MAX) ? 0 : i);
+	return ((*str || i >= INT64_MAX) ? 0 : i);
 }
