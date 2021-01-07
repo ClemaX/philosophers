@@ -4,10 +4,10 @@ bool		table_new(t_philo **philos, int ac, const char **av)
 {
 	g_table.appetite = 0;
 	if ((ac == 5 || (ac == 6 && (g_table.appetite = atoui(av[5]))))
-	&& (g_table.seats = atoui(av[1])) // TODO: > 1
-	&& (g_table.time_to_die = atoui(av[2])) // TODO: > 50
-	&& (g_table.time_to_eat = atoui(av[3])) // TODO: > 50
-	&& (g_table.time_to_sleep = atoui(av[4]))) // TODO: > 50
+	&& (g_table.seats = atoui(av[1])) && g_table.seats > 1
+	&& (g_table.time_to_die = atoui(av[2]))
+	&& (g_table.time_to_eat = atoui(av[3]))
+	&& (g_table.time_to_sleep = atoui(av[4])))
 	{
 		if ((*philos = malloc(sizeof(**philos) * g_table.seats)))
 		{
