@@ -26,7 +26,7 @@
 # define MSG_EUSAGE_PREFIX	"Usage: "
 # define MSG_EUSAGE_ARGS	" seats time_to_die time_to_eat time_to_sleep"
 # define MSG_EUSAGE_OPTS	" [appetite]"
-# define MSG_EUSAGE_SUFFIX	"\n"
+# define MSG_EUSAGE_SUFFIX	"\nThe number of seats must be greater than 1.\n"
 
 # define SEM_OFLAGS			O_CREAT
 # define SEM_MODE			0000700
