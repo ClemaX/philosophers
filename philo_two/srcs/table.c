@@ -99,7 +99,7 @@ bool			table_start(t_philo *philos)
 bool			table_join(t_philo *philos)
 {
 	t_uint	i;
-	int			err;
+	int		err;
 
 	i = 0;
 	err = 0;

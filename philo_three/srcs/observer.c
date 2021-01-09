@@ -31,10 +31,10 @@ void		*observer_thread(void *data)
 
 bool		observer_start(t_philo *philo)
 {
-	const int	err = pthread_create(&philo->tid_observer, NULL,
-		&observer_thread, philo);
+	int	err;
 
-	if (!err)
+	if (!(err = pthread_create(&philo->tid_observer, NULL,
+		&observer_thread, philo)))
 		return (true);
 	table_perror("pthread_create", err);
 	return (false);

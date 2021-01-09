@@ -24,7 +24,7 @@ static bool	observe_death(t_philo *philo)
 	return (running);
 }
 
-void	*observer_thread(void *data)
+void		*observer_thread(void *data)
 {
 	t_philo *const	philo = data;
 

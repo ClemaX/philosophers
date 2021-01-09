@@ -1,6 +1,5 @@
 #include <philo.h>
 
-// TODO: Fix single dining philosopher
 static bool	philo_take_forks(t_philo *philo)
 {
 	if (table_take_fork(philo))

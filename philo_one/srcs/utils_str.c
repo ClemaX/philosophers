@@ -1,6 +1,6 @@
 #include <utils.h>
 
-size_t	ft_strlen(const char *str)
+size_t		ft_strlen(const char *str)
 {
 	size_t	len;
 
@@ -26,7 +26,7 @@ const char	*ft_strerror(int err)
 		{EDEADLK, "A deadlock has been detected!"},
 		{ENAMETOOLONG, "File name too long!"},
 	};
-	unsigned char				i;
+	unsigned char			i;
 
 	i = 0;
 	while (i < sizeof(errmap) / sizeof(*errmap) && errmap[i].err_code != err)

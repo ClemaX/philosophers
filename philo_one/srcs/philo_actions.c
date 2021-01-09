@@ -31,7 +31,6 @@ bool		philo_eat(t_philo *philo)
 {
 	bool	running;
 
-	// TODO: running does not depend on appetite
 	if ((running = philo_take_forks(philo)))
 	{
 		pthread_mutex_lock(&philo->lock);
@@ -74,7 +73,7 @@ bool		philo_sleep(t_philo *philo, t_time duration, const char *message)
 	return (running);
 }
 
-bool		philo_think(t_philo	*philo)
+bool		philo_think(t_philo *philo)
 {
 	bool	running;
 

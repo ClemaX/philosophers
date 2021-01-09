@@ -42,7 +42,6 @@ bool				philo_start(t_philo *philo)
 {
 	if ((philo->pid = fork()) == 0)
 	{
-		// TODO: Maybe use current time instead of global start (depending on lag)
 		philo->time_die = g_table.time_start + g_table.time_to_die;
 		if (observer_start(philo))
 		{

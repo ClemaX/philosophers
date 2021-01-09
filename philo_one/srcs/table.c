@@ -11,7 +11,8 @@ bool		table_new(t_philo **philos, int ac, const char **av)
 	{
 		if ((*philos = malloc(sizeof(**philos) * g_table.seats)))
 		{
-			if ((g_table.forks = malloc(sizeof(*g_table.forks) * g_table.seats)))
+			g_table.forks = malloc(sizeof(*g_table.forks) * g_table.seats);
+			if (g_table.forks)
 			{
 				g_table.fw_index = uilen(g_table.seats);
 				return (true);
@@ -69,8 +70,8 @@ static bool	table_set(t_philo *philos)
 
 bool		table_start(t_philo *philos)
 {
-	t_uint			i;
-	int					err;
+	t_uint	i;
+	int		err;
 
 	if (!table_set(philos))
 		return (false);
@@ -95,7 +96,7 @@ bool		table_start(t_philo *philos)
 bool		table_join(t_philo *philos)
 {
 	t_uint	i;
-	int			err;
+	int		err;
 
 	i = 0;
 	err = 0;
