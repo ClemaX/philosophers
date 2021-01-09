@@ -13,7 +13,7 @@ void	*philo_thread(void *data)
 
 bool	philo_set(t_philo *philo, t_uint index)
 {
-	const t_uint	wrapped_fork = (philo->index + 1) % g_table.seats;
+	const t_uint	wrapped_fork = (index + 1) % g_table.seats;
 	int				err;
 
 	if (!(err = pthread_mutex_init(&philo->lock, NULL)))
@@ -21,11 +21,11 @@ bool	philo_set(t_philo *philo, t_uint index)
 		if (wrapped_fork == 0)
 		{
 			philo->forks[0] = wrapped_fork;
-			philo->forks[1] = philo->index;
+			philo->forks[1] = index;
 		}
 		else
 		{
-			philo->forks[0] = philo->index;
+			philo->forks[0] = index;
 			philo->forks[1] = wrapped_fork;
 		}
 		philo->index = index;
