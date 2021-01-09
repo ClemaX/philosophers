@@ -32,7 +32,7 @@ bool		philo_eat(t_philo *philo)
 		if (running && g_table.appetite
 		&& philo->times_ate < g_table.appetite
 		&& ++philo->times_ate == g_table.appetite)
-			sem_post(g_table.count_satisified);
+			sem_post(g_table.count_satisfied);
 	}
 	return (running);
 }

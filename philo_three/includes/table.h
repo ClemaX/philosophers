@@ -44,7 +44,7 @@ typedef struct			s_table
 	sem_t			*lock_write;
 	sem_t			*lock_run;
 	sem_t			*count_forks;
-	sem_t			*count_satisified;
+	sem_t			*count_satisfied;
 	t_uint			seats;
 	t_uint			appetite;
 	t_time			time_start;

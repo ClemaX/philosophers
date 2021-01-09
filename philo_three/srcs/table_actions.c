@@ -19,7 +19,7 @@ void	table_stop(void)
 	t_uint	i;
 
 	i = 0;
-	while (i < g_table.seats && sem_post(g_table.count_satisified) != -1)
+	while (i < g_table.seats && sem_post(g_table.count_satisfied) != -1)
 		i++;
 	if (i != g_table.seats)
 		table_perror("table: sem_post", errno);
