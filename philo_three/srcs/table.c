@@ -29,9 +29,11 @@ void	table_del(t_philo **philos)
 	while (i < g_table.seats)
 		philo_del(&(*philos)[i++]);
 	sem_close(g_table.count_forks);
+	sem_close(g_table.count_satisfied);
 	sem_close(g_table.lock_run);
 	sem_close(g_table.lock_write);
 	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_SATISFIED);
 	sem_unlink(SEM_RUN);
 	sem_unlink(SEM_WRITE);
 	free(*philos);
@@ -52,7 +54,7 @@ bool	table_set(t_philo *philos)
 	i = 0;
 	if ((g_table.count_forks = sem_open(SEM_FORKS, SEM_OFLAGS, SEM_MODE,
 		g_table.seats)) != SEM_FAILED
-	&& (g_table.count_satisified = sem_open(SEM_SATISFIED, SEM_OFLAGS, SEM_MODE,
+	&& (g_table.count_satisfied = sem_open(SEM_SATISFIED, SEM_OFLAGS, SEM_MODE,
 		0)) != SEM_FAILED
 	&& (g_table.lock_write = sem_open(SEM_WRITE, SEM_OFLAGS, SEM_MODE, 1))
 		!= SEM_FAILED
@@ -75,7 +77,7 @@ bool	table_join(t_philo *philos)
 	int		status;
 
 	i = 0;
-	while (i < g_table.seats && sem_wait(g_table.count_satisified) != -1)
+	while (i < g_table.seats && sem_wait(g_table.count_satisfied) != -1)
 		i++;
 	sem_wait(g_table.lock_write);
 	if (i != g_table.seats)
