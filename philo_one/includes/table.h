@@ -59,6 +59,7 @@ void					table_perror(const char *msg, int err);
 t_time					table_log(t_philo *philo, const char *message);
 
 bool					table_running(void);
+bool					table_running_log(t_philo *philo, const char *message);
 
 bool					table_new(t_philo **philos, int ac, const char **av);
 void					table_del(t_philo **philos);
