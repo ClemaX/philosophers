@@ -93,12 +93,13 @@ bool		table_start(t_philo *philos)
 	g_table.time_start = time_millis();
 	while (!err && i < g_table.seats)
 	{
-		philos[i].time_die = g_table.time_start + g_table.time_to_die;
+		philos[i].time_die = time_millis() + g_table.time_to_die;
 		if (!(err = pthread_create(&philos[i].tid, NULL,
 			&philo_thread, &philos[i])))
 			err = pthread_create(&philos[i].tid_observer, NULL,
 				&observer_thread, &philos[i]);
-		i++;
+		if (++i < g_table.seats)
+			usleep(100);
 	}
 	if (i != g_table.seats)
 		table_perror("table: pthread_create", err);
