@@ -14,7 +14,7 @@ BINDIR=.
 # Flags
 CFLAGS = -Wall -Wextra -I$(INCDIR) -g3
 DFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.d
-LDFLAGS = -lpthread
+LDFLAGS = -lpthread -fsanitize=address
 
 SRCS = $(addprefix $(SRCDIR)/,\
 	observer.c\

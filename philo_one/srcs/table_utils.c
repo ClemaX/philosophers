@@ -61,3 +61,14 @@ bool	table_running(void)
 	pthread_mutex_unlock(&g_table.lock_run);
 	return (running);
 }
+
+bool	table_running_log(t_philo *philo, const char *message)
+{
+	bool	running;
+
+	pthread_mutex_lock(&g_table.lock_run);
+	if ((running = g_table.running))
+		table_log(philo, message);
+	pthread_mutex_unlock(&g_table.lock_run);
+	return (running);
+}

@@ -18,6 +18,7 @@ static bool	observe_death(t_philo *philo)
 	bool	running;
 
 	pthread_mutex_lock(&philo->lock);
+	dprintf(2, "observer: philo %llu: time_die: %llu\n", philo->index, philo->time_die);
 	time_die = philo->time_die;
 	pthread_mutex_unlock(&philo->lock);
 	sleep_until(time_die);
@@ -40,6 +41,7 @@ void		*observer_thread(void *data)
 {
 	t_philo *const	philo = data;
 
+	dprintf(2, "observer: observing philo %llu...\n", philo->index);
 	while (observe_death(philo))
 		;
 	pthread_join(philo->tid, &data);

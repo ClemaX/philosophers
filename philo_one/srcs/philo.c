@@ -25,7 +25,7 @@ void	*philo_thread(void *data)
 
 bool	philo_set(t_philo *philo, t_uint index)
 {
-	const t_uint	wrapped_fork = (index + 1) % g_table.seats;
+	const t_uint	wrapped_fork = (index + 1) % (g_table.seats);
 	int				err;
 
 	if (!(err = pthread_mutex_init(&philo->lock, NULL)))
@@ -43,6 +43,8 @@ bool	philo_set(t_philo *philo, t_uint index)
 		philo->index = index;
 		philo->times_ate = 0;
 		philo->time_die = 0;
+
+		dprintf(2, "philo %llu using forks %llu and %llu!\n", index + 1, philo->forks[0], philo->forks[1]);
 	}
 	return (!err);
 }
