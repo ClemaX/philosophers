@@ -25,14 +25,30 @@
 #  define NAME_MAX 255
 # endif
 
-# ifndef FW_TIMESTAMP
-#  define FW_TIMESTAMP 8
+# ifndef MSG_DELIM
+#  define MSG_DELIM	" "
 # endif
 
 # define MSG_EUSAGE_PREFIX	"Usage: "
 # define MSG_EUSAGE_ARGS	" seats time_to_die time_to_eat time_to_sleep"
 # define MSG_EUSAGE_OPTS	" [appetite]"
 # define MSG_EUSAGE_SUFFIX	"\nThe number of seats must be greater than 1.\n"
+
+# define MSG_DIED		"died"
+# define MSG_EATING		"is eating"
+# define MSG_THINKING	"is thinking"
+# define MSG_SLEEPING	"is sleeping"
+# define MSG_TAKE_FORK	"has taken a fork"
+
+/*
+**	                     <---8--> <3> <------16------>
+*/
+# define MSG_TEMPLATE	"00000000 000                 \n"
+
+# define MSG_TSLEN		8U
+# define MSG_IDXLEN		3U
+# define MSG_MAXLEN		16U
+
 
 typedef struct			s_table
 {
@@ -56,10 +72,12 @@ typedef struct s_philo	t_philo;
 
 void					table_show_usage(const char *name);
 void					table_perror(const char *msg, int err);
-t_time					table_log(t_philo *philo, const char *message);
+t_time					table_log(t_philo *philo, const char *message,
+	size_t size);
 
 bool					table_running(void);
-bool					table_running_log(t_philo *philo, const char *message);
+bool					table_running_log(t_philo *philo, const char *message,
+	size_t length);
 
 bool					table_new(t_philo **philos, int ac, const char **av);
 void					table_del(t_philo **philos);

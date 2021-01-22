@@ -51,6 +51,23 @@ int				putui(int fd, t_uint number, unsigned char fw)
 	return (write(fd, str, len));
 }
 
+void			strputui(char *dest, t_uint number, unsigned char fw)
+{
+	static const int	pad_max = sizeof(UINT_PADDING) - 1;
+	unsigned char		num_len = uilen(number);
+	const int			pad_len = fw <= pad_max ? fw - num_len : pad_max - num_len;
+
+	if (pad_len >= 0)
+	{
+		num_len += pad_len;
+		while (num_len-- > pad_len)
+		{
+			dest[num_len] = number % 10 + '0';
+			number /= 10;
+		}
+	}
+}
+
 t_uint			atoui(const char *str)
 {
 	t_uint	i;

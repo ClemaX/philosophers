@@ -45,6 +45,8 @@ unsigned char		uilen(t_uint number);
 t_uint				atoui(const char *str);
 const char			*uitoa(t_uint number, unsigned char *len);
 int					putui(int fd, t_uint number, unsigned char field_width);
+void				strputui(char *dest, t_uint number,
+	unsigned char field_width);
 
 /*
 **					utils_str.c

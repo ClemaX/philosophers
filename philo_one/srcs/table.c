@@ -16,7 +16,8 @@ bool		table_new(t_philo **philos, int ac, const char **av)
 {
 	g_table.appetite = 0;
 	if ((ac == 5 || (ac == 6 && (g_table.appetite = atoui(av[5]))))
-	&& (g_table.seats = atoui(av[1])) && g_table.seats > 1
+	&& (g_table.seats = atoui(av[1]))
+	&& g_table.seats > 1 && g_table.seats < 300
 	&& (g_table.time_to_die = atoui(av[2]))
 	&& (g_table.time_to_eat = atoui(av[3]))
 	&& (g_table.time_to_sleep = atoui(av[4])))
@@ -91,7 +92,7 @@ bool		table_start(t_philo *philos)
 	err = 0;
 	g_table.running = true;
 	g_table.time_start = time_millis();
-	dprintf(2, "table: time_start: %llu\n", g_table.time_start);
+	//dprintf(2, "table: time_start: %llu\n", g_table.time_start);
 	while (!err && i < g_table.seats)
 	{
 		philos[i].time_die = time_millis() + g_table.time_to_die;
@@ -100,6 +101,7 @@ bool		table_start(t_philo *philos)
 			err = pthread_create(&philos[i].tid_observer, NULL,
 				&observer_thread, &philos[i]);
 		i++;
+		usleep(1000);
 	}
 	if (i != g_table.seats)
 		table_perror("table: pthread_create", err);

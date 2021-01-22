@@ -14,20 +14,20 @@
 
 static bool	philo_take_forks(t_philo *philo)
 {
+	t_time	time_ate;
+
 	pthread_mutex_lock(&g_table.forks[philo->forks[0]]);
-	if (table_running_log(philo, "has taken a fork"))
+	if (table_running_log(philo, MSG_TAKE_FORK, sizeof(MSG_TAKE_FORK) - 1))
 	{
 		pthread_mutex_lock(&g_table.forks[philo->forks[1]]);
-		pthread_mutex_lock(&g_table.lock_run);
-		if (g_table.running)
-		{
-			pthread_mutex_lock(&philo->lock);
-			philo->time_die = table_log(philo, "has taken a fork") + g_table.time_to_die;
-			pthread_mutex_unlock(&philo->lock);
-			pthread_mutex_unlock(&g_table.lock_run);
+		time_ate = time_millis();
+		pthread_mutex_lock(&philo->lock);
+		philo->time_die = time_ate + g_table.time_to_die;
+		pthread_mutex_unlock(&philo->lock);
+		if (table_running_log(philo, MSG_TAKE_FORK, sizeof(MSG_TAKE_FORK) - 1)
+		&& philo_sleep(philo, time_ate + g_table.time_to_eat,
+			MSG_EATING, sizeof(MSG_EATING) - 1))
 			return (true);
-		}
-		pthread_mutex_unlock(&g_table.lock_run);
 		pthread_mutex_unlock(&g_table.forks[philo->forks[1]]);
 	}
 	pthread_mutex_unlock(&g_table.forks[philo->forks[0]]);
@@ -44,7 +44,7 @@ bool		philo_eat(t_philo *philo)
 {
 	bool	running;
 
-	if ((running = (philo_take_forks(philo) && philo_sleep(philo, g_table.time_to_eat, "is eating"))))
+	if ((running = (philo_take_forks(philo))))
 	{
 		philo_drop_forks(philo);
 		if (g_table.appetite
@@ -63,37 +63,26 @@ bool		philo_eat(t_philo *philo)
 	return (running);
 }
 
-bool		philo_sleep(t_philo *philo, t_time duration, const char *message)
+bool		philo_sleep(t_philo *philo, t_time time_wake, const char *message,
+	size_t length)
 {
 	bool	running;
-	t_time	now;
 	t_time	time_die;
+	t_time	duration;
 
-	pthread_mutex_lock(&g_table.lock_run);
-	if ((running = g_table.running))
+	pthread_mutex_lock(&philo->lock);
+	time_die = philo->time_die;
+	pthread_mutex_unlock(&philo->lock);
+	if ((running = table_running_log(philo, message, length)))
 	{
-		pthread_mutex_unlock(&g_table.lock_run);
-		pthread_mutex_lock(&philo->lock);
-		time_die = philo->time_die;
-		pthread_mutex_unlock(&philo->lock);
-		pthread_mutex_lock(&g_table.lock_run);
-		if ((running = g_table.running))
-		{
-			now = table_log(philo, message);
-			pthread_mutex_unlock(&g_table.lock_run);
-			if (now + duration > time_die)
-				duration = time_die - now;
-			usleep(duration * 1000);
-		}
-		else
-			pthread_mutex_unlock(&g_table.lock_run);
+		duration = ((time_wake < time_die) ? time_wake : time_die)
+			- time_millis();
+		usleep(duration * 1000);
 	}
-	else
-		pthread_mutex_unlock(&g_table.lock_run);
 	return (running);
 }
 
 bool		philo_think(t_philo *philo)
 {
-	return (table_running_log(philo, "is thinking"));
+	return (table_running_log(philo, MSG_THINKING, sizeof(MSG_THINKING) - 1));
 }

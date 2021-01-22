@@ -21,17 +21,21 @@ void	table_show_usage(const char *name)
 	write(STDERR_FILENO, MSG_EUSAGE_SUFFIX, sizeof(MSG_EUSAGE_SUFFIX) - 1);
 }
 
-t_time	table_log(t_philo *philo, const char *message)
+t_time	table_log(t_philo *philo, const char *message, size_t length)
 {
+	static char		template[] = MSG_TEMPLATE;
 	const t_time	now = time_millis();
+	size_t			index;
 
 	pthread_mutex_lock(&g_table.lock_write);
-	putui(STDOUT_FILENO, now - g_table.time_start, FW_TIMESTAMP);
-	write(STDOUT_FILENO, " ", 1);
-	putui(STDOUT_FILENO, philo->index + 1, g_table.fw_index);
-	write(STDOUT_FILENO, " ", 1);
-	write(STDOUT_FILENO, message, ft_strlen(message));
-	write(STDOUT_FILENO, "\n", 1);
+	strputui(template, now - g_table.time_start, MSG_TSLEN);
+	index = MSG_TSLEN + sizeof(MSG_DELIM) - 1;
+	strputui(&template[index], philo->index + 1, MSG_IDXLEN);
+	index += MSG_IDXLEN + sizeof(MSG_DELIM) - 1;
+	while (length--)
+		template[index++] = *message++;
+	template[index++] = '\n';
+	write(STDOUT_FILENO, template, index);
 	pthread_mutex_unlock(&g_table.lock_write);
 	return (now);
 }
@@ -62,13 +66,13 @@ bool	table_running(void)
 	return (running);
 }
 
-bool	table_running_log(t_philo *philo, const char *message)
+bool	table_running_log(t_philo *philo, const char *message, size_t length)
 {
 	bool	running;
 
 	pthread_mutex_lock(&g_table.lock_run);
 	if ((running = g_table.running))
-		table_log(philo, message);
+		table_log(philo, message, length);
 	pthread_mutex_unlock(&g_table.lock_run);
 	return (running);
 }

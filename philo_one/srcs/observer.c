@@ -18,17 +18,18 @@ static bool	observe_death(t_philo *philo)
 	bool	running;
 
 	pthread_mutex_lock(&philo->lock);
-	dprintf(2, "observer: philo %llu: time_die: %llu\n", philo->index, philo->time_die);
 	time_die = philo->time_die;
+	//dprintf(2, "observer: philo %llu: time_die: %llu\n", philo->index + 1, time_die - g_table.time_start);
 	pthread_mutex_unlock(&philo->lock);
 	sleep_until(time_die);
+	//dprintf(2, "observer: philo %llu: time_now: %llu\n", philo->index + 1, time_millis() - g_table.time_start);
 	pthread_mutex_lock(&philo->lock);
 	if (!(running = time_die != philo->time_die))
 	{
 		pthread_mutex_lock(&g_table.lock_run);
 		if (g_table.running)
 		{
-			table_log(philo, "died");
+			table_log(philo, MSG_DIED, sizeof(MSG_DIED) - 1);
 			g_table.running = false;
 		}
 		pthread_mutex_unlock(&g_table.lock_run);
@@ -41,7 +42,7 @@ void		*observer_thread(void *data)
 {
 	t_philo *const	philo = data;
 
-	dprintf(2, "observer: observing philo %llu...\n", philo->index);
+	//dprintf(2, "observer: observing philo %llu...\n", philo->index);
 	while (observe_death(philo))
 		;
 	pthread_join(philo->tid, &data);
