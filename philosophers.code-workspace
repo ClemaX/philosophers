@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "philo_three"
+		},
+		{
+			"path": "philo_new"
 		}
 	],
 	"settings": {
