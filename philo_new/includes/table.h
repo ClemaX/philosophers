@@ -62,8 +62,6 @@ typedef struct s_philo	t_philo;
 
 void					table_show_usage(const char *name);
 void					table_perror(const char *msg, int err);
-void					table_log(t_uint index, const char *message,
-	size_t size);
 bool					table_running(void);
 
 bool					table_new(t_philo **philos, int ac, const char **av);

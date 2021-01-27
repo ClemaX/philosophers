@@ -32,10 +32,8 @@ static const char	*g_state_msgs[] =
 
 typedef struct	s_philo
 {
-	pthread_mutex_t	*forks[2];
-	pthread_mutex_t	lock_state;
-	bool			state_changed;
-	t_philo_state	state;
+	t_uint			forks[2];
+	pthread_mutex_t	lock_time_starve;
 	char			log_buffer[32];
 	t_uint			index;
 	t_time			time_starve;
@@ -51,6 +49,7 @@ typedef struct	s_philo
 //bool			philo_think(t_philo *philo);
 
 bool			philo_set(t_philo *philo, t_uint index);
+bool			philo_log(t_time now, t_philo *philo, t_philo_state state);
 void			*philo_thread(void *data);
 
 #endif

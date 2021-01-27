@@ -44,7 +44,7 @@ void		table_del(t_philo **philos)
 	while (i < g_table.seats)
 	{
 		pthread_mutex_destroy(&g_table.forks[i]);
-		pthread_mutex_destroy(&(*philos)[i++].lock_state);
+		pthread_mutex_destroy(&(*philos)[i++].lock_time_starve);
 	}
 	pthread_mutex_destroy(&g_table.lock_run);
 	free(g_table.forks);
@@ -92,6 +92,7 @@ bool		table_start(t_philo *philos)
 		philos[i].time_starve = time_millis() + g_table.time_to_starve;
 		err = pthread_create(&philos[i].tid_observer, NULL, &observer_thread, &philos[i]);
 		i++;
+		usleep(50);
 	}
 	if (i != g_table.seats)
 		table_perror("table: pthread_create", err);
@@ -110,6 +111,6 @@ bool		table_join(t_philo *philos)
 		i++;
 	if (i != g_table.seats)
 		table_perror("table: pthread_join", err);
-	dprintf(2, "Joined observers!\n");
+	write(2, "Joined observers!\n", 18);
 	return (!err);
 }
