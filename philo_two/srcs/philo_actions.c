@@ -69,17 +69,10 @@ bool		philo_eat(t_philo *philo)
 bool		philo_sleep(t_philo *philo, t_time duration, const char *message)
 {
 	bool	running;
-	t_time	now;
-	t_time	time_die;
 
 	if ((running = table_running()))
 	{
-		sem_wait(philo->lock);
-		time_die = philo->time_die;
-		sem_post(philo->lock);
-		now = table_log(philo, message);
-		if (now + duration > time_die)
-			duration = time_die - now;
+		table_log(philo, message);
 		usleep(duration * 1000);
 	}
 	return (running);
