@@ -54,6 +54,7 @@ typedef struct			s_table
 	t_time			time_to_eat;
 	t_time			time_to_sleep;
 	t_uint			appetite;
+	t_uint			satisfied;
 }						t_table;
 
 extern t_table			g_table;

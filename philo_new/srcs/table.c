@@ -67,7 +67,7 @@ static bool	table_set(t_philo *philos)
 			i++;
 		if (i == g_table.seats)
 		{
-			// TODO: g_table.satisfied = 0;
+			g_table.satisfied = 0;
 			return (true);
 		}
 	}

@@ -37,19 +37,16 @@ typedef struct	s_philo
 	char			log_buffer[32];
 	t_uint			index;
 	t_time			time_starve;
+	t_uint			times_ate;
 	pthread_t		tid_observer;
 }				t_philo;
 
 /*
 **				philo_actions.c
 */
-//bool			philo_eat(t_philo *philo);
-//bool			philo_sleep(t_philo *philo, t_time duration,
-//	const char *message, size_t message_size);
-//bool			philo_think(t_philo *philo);
 
 bool			philo_set(t_philo *philo, t_uint index);
-bool			philo_log(t_time now, t_philo *philo, t_philo_state state);
+bool			philo_log(t_philo *philo, t_philo_state state);
 void			*philo_thread(void *data);
 
 #endif
