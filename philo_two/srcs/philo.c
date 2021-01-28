@@ -55,7 +55,7 @@ void				*philo_thread(void *data)
 	t_philo *const	philo = data;
 
 	while (philo_eat(philo)
-	&& philo_sleep(philo, g_table.time_to_sleep, "is sleeping")
+	&& philo_sleep(philo)
 	&& philo_think(philo))
 		;
 	return (NULL);

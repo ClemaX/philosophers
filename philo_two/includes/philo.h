@@ -35,8 +35,7 @@ typedef struct	s_philo
 **				philo_actions.c
 */
 bool			philo_eat(t_philo *philo);
-bool			philo_sleep(t_philo *philo, t_time duration,
-	const char *message);
+bool			philo_sleep(t_philo *philo);
 bool			philo_think(t_philo *philo);
 
 /*

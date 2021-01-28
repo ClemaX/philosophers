@@ -33,9 +33,15 @@ static void	observe_death(t_philo *philo)
 				g_table.running = false;
 			}
 			sem_post(g_table.lock_run);
+			running = false;
 		}
 		else
-			usleep((time_die - now) * 1000);
+		{
+			sleep_until(time_die);
+			sem_wait(g_table.lock_run);
+			running = g_table.running;
+			sem_post(g_table.lock_run);
+		}
 	}
 }
 
