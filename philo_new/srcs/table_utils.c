@@ -31,24 +31,6 @@ bool	table_running(void)
 	return (running);
 }
 
-/* void	table_log_async(t_uint philo_index, const char *message, size_t length)
-{
-	static char		template[] = MSG_TEMPLATE;
-	const t_time	now = time_millis();
-	size_t			index;
-
-	pthread_mutex_lock(&g_table.lock_write);
-	strputui(template, now - g_table.time_start, MSG_TSLEN);
-	index = MSG_TSLEN + sizeof(MSG_DELIM) - 1;
-	strputui(&template[index], philo_index + 1, MSG_IDXLEN);
-	index += MSG_IDXLEN + sizeof(MSG_DELIM) - 1;
-	while (length--)
-		template[index++] = *message++;
-	template[index++] = '\n';
-	write(STDOUT_FILENO, template, index);
-	pthread_mutex_unlock(&g_table.lock_write);
-} */
-
 void	table_perror(const char *msg, int err)
 {
 	const char *const	err_msg = ft_strerror(err);
