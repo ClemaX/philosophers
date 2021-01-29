@@ -113,6 +113,5 @@ bool		table_join(t_philo *philos)
 		i++;
 	if (i != g_table.seats)
 		table_perror("table: pthread_join", err);
-	write(2, "Joined observers!\n", 18);
 	return (!err);
 }
