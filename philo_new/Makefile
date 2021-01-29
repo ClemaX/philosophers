@@ -19,6 +19,7 @@ LDFLAGS = -lpthread# -fsanitize=address
 SRCS = $(addprefix $(SRCDIR)/,\
 	main.c\
 	observer.c\
+	philo_utils.c\
 	philo.c\
 	table_utils.c\
 	table.c\

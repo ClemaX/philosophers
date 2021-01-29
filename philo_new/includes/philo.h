@@ -46,7 +46,7 @@ typedef struct	s_philo
 */
 
 bool			philo_set(t_philo *philo, t_uint index);
-bool			philo_log(t_philo *philo, t_philo_state state);
+t_time			philo_log(t_philo *philo, t_philo_state state);
 void			*philo_thread(void *data);
 
 #endif

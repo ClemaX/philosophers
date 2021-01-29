@@ -12,7 +12,7 @@
 
 #include <observer.h>
 
-void	observer_log(t_time now, t_philo *philo, t_philo_state state)
+static void	observer_log(t_time now, t_philo *philo, t_philo_state state)
 {
 	const char		*message = g_state_msgs[state];
 	size_t			index;
@@ -33,9 +33,7 @@ static void	observe_death(t_philo *philo)
 	t_time	time_starve;
 	t_time	now;
 
-	pthread_mutex_lock(&g_table.lock_run);
-	running = g_table.running;
-	pthread_mutex_unlock(&g_table.lock_run);
+	running = table_running();
 	while (running)
 	{
 		pthread_mutex_lock(&philo->lock_time_starve);
@@ -54,15 +52,13 @@ static void	observe_death(t_philo *philo)
 		}
 		else
 		{
-			usleep(time_starve - now);
-			pthread_mutex_lock(&g_table.lock_run);
-			running = g_table.running;
-			pthread_mutex_unlock(&g_table.lock_run);
+			sleep_until(time_starve);
+			running = table_running();
 		}
 	}
 }
 
-void	*observer_thread(void *data)
+void		*observer_thread(void *data)
 {
 	t_philo *const	philo = data;
 	pthread_t		tid;

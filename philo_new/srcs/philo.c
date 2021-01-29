@@ -25,93 +25,65 @@ bool	philo_set(t_philo *philo, t_uint index)
 	return (!err);
 }
 
-bool	philo_log(t_philo *philo, t_philo_state state)
+static t_time	philo_take_forks(t_philo *philo)
 {
-	const char		*message = g_state_msgs[state];
-	size_t			index;
-	bool			running;
+	t_time	time_now;
 
-	index = MSG_TSLEN + sizeof(MSG_DELIM) - 1;
-	strputui(&philo->log_buffer[index], philo->index + 1, MSG_IDXLEN);
-	index += MSG_IDXLEN + sizeof(MSG_DELIM) - 1;
-	while (*message)
-		philo->log_buffer[index++] = *message++;
-	philo->log_buffer[index++] = '\n';
-	pthread_mutex_lock(&g_table.lock_run);
-	if ((running = g_table.running))
-	{
-		strputui(philo->log_buffer, time_millis() - g_table.time_start, MSG_TSLEN);
-		write(STDOUT_FILENO, philo->log_buffer, index);
-	}
-	pthread_mutex_unlock(&g_table.lock_run);
-	return (running);
-}
-
-bool	philo_take_forks(t_philo *philo)
-{
 	pthread_mutex_lock(&g_table.forks[philo->forks[0]]);
-	if (philo_log(philo, TAKING_FORK))
+	if ((time_now = philo_log(philo, TAKING_FORK)))
 	{
 		pthread_mutex_lock(&g_table.forks[philo->forks[1]]);
-		if (philo_log(philo, TAKING_FORK))
-			return (true);
+		if ((time_now = philo_log(philo, TAKING_FORK)))
+			return (time_now);
 	}
 	pthread_mutex_unlock(&g_table.forks[philo->forks[0]]);
-	return (false);
+	return (time_now);
 }
 
-void	philo_drop_forks(t_philo *philo)
+static t_time	philo_eat(t_philo *philo)
 {
-	pthread_mutex_unlock(&g_table.forks[philo->forks[1]]);
-	pthread_mutex_unlock(&g_table.forks[philo->forks[0]]);
-}
+	t_time	time_now;
 
-bool	philo_eat(t_philo *philo)
-{
-	t_time			time_now;
-	bool			running;
-
-	if ((running = philo_take_forks(philo)))
+	if ((time_now = philo_take_forks(philo))
+	&& (time_now = philo_log(philo, EATING)))
 	{
-		time_now = time_millis();
-		if ((running = philo_log(philo, EATING)))
+		pthread_mutex_lock(&philo->lock_time_starve);
+		philo->time_starve = time_now + g_table.time_to_starve;
+		pthread_mutex_unlock(&philo->lock_time_starve);
+		sleep_until(time_now + g_table.time_to_eat);
+		if (g_table.appetite && philo->times_ate < g_table.appetite
+		&& ++philo->times_ate == g_table.appetite)
 		{
-			pthread_mutex_lock(&philo->lock_time_starve);
-			philo->time_starve = time_now + g_table.time_to_starve;
-			pthread_mutex_unlock(&philo->lock_time_starve);
-			sleep_until(time_now + g_table.time_to_eat);
-			if (g_table.appetite && philo->times_ate < g_table.appetite
-			&& ++philo->times_ate == g_table.appetite)
+			pthread_mutex_lock(&g_table.lock_run);
+			if (++g_table.satisfied == g_table.seats)
 			{
-				pthread_mutex_lock(&g_table.lock_run);
-				if (++g_table.satisfied == g_table.seats)
-				{
-					g_table.running = false;
-					running = false;
-				}
-				pthread_mutex_unlock(&g_table.lock_run);
+				g_table.running = false;
+				time_now = 0;
 			}
+			pthread_mutex_unlock(&g_table.lock_run);
 		}
-		philo_drop_forks(philo);
+		pthread_mutex_unlock(&g_table.forks[philo->forks[1]]);
+		pthread_mutex_unlock(&g_table.forks[philo->forks[0]]);
 	}
-	return (running);
+	return (time_now);
+}
+
+static t_time	philo_sleep(t_philo *philo)
+{
+	const t_time	time_now = philo_log(philo, SLEEPING);
+
+	if (time_now)
+		sleep_until(time_now + g_table.time_to_sleep);
+	return (time_now);
 }
 
 void	*philo_thread(void *data)
 {
 	t_philo *const	philo = data;
-	t_time			time_now;
-	bool			running;
 
-	running = true;
-	while (running && (running = philo_eat(philo)))
-	{
-		time_now = time_millis();
-		if ((running = philo_log(philo, SLEEPING)))
-		{
-			sleep_until(time_now + g_table.time_to_sleep);
-			running = philo_log(philo, THINKING);
-		}
-	}
+	while (philo_eat(philo)
+	&& philo_sleep(philo)
+	&& philo_log(philo, THINKING))
+		;
 	return (data);
 }
