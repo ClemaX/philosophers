@@ -25,5 +25,3 @@ void	sleep_until(t_time then)
 	while (time_millis() < then)
 		usleep(100);
 }
-
-

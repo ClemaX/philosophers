@@ -29,12 +29,10 @@ static void	observer_log(t_time now, t_philo *philo, t_philo_state state)
 
 static void	observe_death(t_philo *philo)
 {
-	bool	running;
 	t_time	time_starve;
 	t_time	now;
 
-	running = table_running();
-	while (running)
+	while (table_running())
 	{
 		pthread_mutex_lock(&philo->lock_time_starve);
 		time_starve = philo->time_starve;
@@ -48,13 +46,9 @@ static void	observe_death(t_philo *philo)
 				observer_log(now, philo, STARVED);
 			}
 			pthread_mutex_unlock(&g_table.lock_run);
-			running = false;
 		}
 		else
-		{
 			sleep_until(time_starve);
-			running = table_running();
-		}
 	}
 }
 

@@ -92,7 +92,8 @@ bool		table_start(t_philo *philos)
 	{
 		gettimeofday(&tv_now, NULL);
 		philos[i].time_starve = time_millis() + g_table.time_to_starve;
-		err = pthread_create(&philos[i].tid_observer, NULL, &observer_thread, &philos[i]);
+		err = pthread_create(&philos[i].tid_observer, NULL,
+			&observer_thread, &philos[i]);
 		i++;
 		usleep(50);
 	}

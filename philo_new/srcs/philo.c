@@ -1,6 +1,6 @@
 #include <philo.h>
 
-bool	philo_set(t_philo *philo, t_uint index)
+bool			philo_set(t_philo *philo, t_uint index)
 {
 	const t_uint	wrapped_fork = (index + 1) % g_table.seats;
 	int				err;
@@ -77,7 +77,7 @@ static t_time	philo_sleep(t_philo *philo)
 	return (time_now);
 }
 
-void	*philo_thread(void *data)
+void			*philo_thread(void *data)
 {
 	t_philo *const	philo = data;
 
