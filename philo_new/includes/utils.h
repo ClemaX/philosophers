@@ -36,7 +36,7 @@ typedef struct		s_errmap
 **					utils_time.c
 */
 t_time				time_millis(void);
-void				sleep_until(t_time time);
+void				sleep_until(t_time then);
 
 /*
 **					utils_int.c
