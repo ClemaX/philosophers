@@ -14,17 +14,14 @@
 
 static void	observe_death(t_philo *philo)
 {
-	t_time	now;
 	t_time	time_die;
-	bool	running;
 
-	running = true;
-	while (running)
+	while (table_running())
 	{
 		sem_wait(philo->lock);
 		time_die = philo->time_die;
 		sem_post(philo->lock);
-		if ((now = time_millis()) >= time_die)
+		if (time_millis() >= time_die)
 		{
 			sem_wait(g_table.lock_run);
 			if (g_table.running)
@@ -33,15 +30,10 @@ static void	observe_death(t_philo *philo)
 				g_table.running = false;
 			}
 			sem_post(g_table.lock_run);
-			running = false;
+			break ;
 		}
 		else
-		{
 			sleep_until(time_die);
-			sem_wait(g_table.lock_run);
-			running = g_table.running;
-			sem_post(g_table.lock_run);
-		}
 	}
 }
 
