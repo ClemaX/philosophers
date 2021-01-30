@@ -1,21 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   observer.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/23 16:51:37 by chamada           #+#    #+#             */
-/*   Updated: 2021/01/09 16:03:52 by chamada          ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <observer.h>
 
 static void	observer_log(t_time now, t_philo *philo, t_philo_state state)
 {
-	const char		*message = g_state_msgs[state];
-	size_t			index;
+	const char	*message = g_state_msgs[state];
+	size_t		index;
 
 	strputui(philo->log_buffer, now - g_table.time_start, MSG_TSLEN);
 	index = MSG_TSLEN + sizeof(MSG_DELIM) - 1;
