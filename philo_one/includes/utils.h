@@ -36,7 +36,7 @@ typedef struct		s_errmap
 **					utils_time.c
 */
 t_time				time_millis(void);
-void				sleep_until(t_time time);
+void				sleep_until(t_time then);
 
 /*
 **					utils_int.c
@@ -52,6 +52,7 @@ void				strputui(char *dest, t_uint number,
 **					utils_str.c
 */
 size_t				ft_strlen(const char *str);
+char				*ft_strcpy(char *dst, const char *src);
 const char			*ft_strerror(int err);
 
 #endif

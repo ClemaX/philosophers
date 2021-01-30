@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils_str.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/24 13:09:08 by chamada           #+#    #+#             */
-/*   Updated: 2021/01/09 16:03:52 by chamada          ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <utils.h>
 
 size_t		ft_strlen(const char *str)
@@ -20,6 +8,16 @@ size_t		ft_strlen(const char *str)
 	while (*str++)
 		len++;
 	return (len);
+}
+
+char		*ft_strcpy(char *dst, const char *src)
+{
+	char *const start = dst;
+
+	while (*src)
+		*dst++ = *src++;
+	*dst = *src;
+	return (start);
 }
 
 const char	*ft_strerror(int err)

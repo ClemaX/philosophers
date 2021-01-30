@@ -12,15 +12,15 @@ OBJDIR=objs
 BINDIR=.
 
 # Flags
-CFLAGS = -Wall -Wextra -I$(INCDIR) -g3
+CFLAGS = -Wall -Wextra -I$(INCDIR) #-g3
 DFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.d
-LDFLAGS = -lpthread -fsanitize=address
+LDFLAGS = -lpthread# -fsanitize=address
 
 SRCS = $(addprefix $(SRCDIR)/,\
+	main.c\
 	observer.c\
-	philo_actions.c\
+	philo_utils.c\
 	philo.c\
-	philosophers.c\
 	table_utils.c\
 	table.c\
 	utils_int.c\

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils_int.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/24 13:09:08 by chamada           #+#    #+#             */
-/*   Updated: 2021/01/07 18:47:13 by chamada          ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <utils.h>
 
 unsigned char	uilen(t_uint number)
@@ -54,9 +42,11 @@ int				putui(int fd, t_uint number, unsigned char fw)
 void			strputui(char *dest, t_uint number, unsigned char fw)
 {
 	static const int	pad_max = sizeof(UINT_PADDING) - 1;
-	unsigned char		num_len = uilen(number);
-	const int			pad_len = fw <= pad_max ? fw - num_len : pad_max - num_len;
+	unsigned char		num_len;
+	int					pad_len;
 
+	num_len = uilen(number);
+	pad_len = fw <= pad_max ? fw - num_len : pad_max - num_len;
 	if (pad_len >= 0)
 	{
 		num_len += pad_len;

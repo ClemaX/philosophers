@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils_time.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/29 23:55:53 by chamada           #+#    #+#             */
-/*   Updated: 2020/12/29 23:55:53 by chamada          ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <utils.h>
 
 t_time	time_millis(void)
@@ -20,10 +8,8 @@ t_time	time_millis(void)
 	return (now.tv_sec * (t_time)1000 + now.tv_usec / 1000);
 }
 
-void	sleep_until(t_time time)
+void	sleep_until(t_time then)
 {
-	const t_time	now = time_millis();
-
-	if (now < time)
-		usleep((time - now) * 1000);
+	while (time_millis() < then)
+		usleep(100);
 }
