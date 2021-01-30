@@ -95,7 +95,7 @@ bool		table_start(t_philo *philos)
 		err = pthread_create(&philos[i].tid_observer, NULL,
 			&observer_thread, &philos[i]);
 		i++;
-		usleep(50);
+		usleep(1000);
 	}
 	if (i != g_table.seats)
 		table_perror("table: pthread_create", err);

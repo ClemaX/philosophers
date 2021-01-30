@@ -14,22 +14,13 @@
 
 bool			philo_set(t_philo *philo, t_uint index)
 {
-	const t_uint	wrapped_fork = (index + 1) % g_table.seats;
-	int				err;
+	int	err;
 
 	if (!(err = pthread_mutex_init(&philo->lock_time_starve, NULL)))
 	{
 		ft_strcpy(philo->log_buffer, MSG_TEMPLATE);
-		if (wrapped_fork != 0)
-		{
-			philo->forks[0] = index;
-			philo->forks[1] = wrapped_fork;
-		}
-		else
-		{
-			philo->forks[0] = wrapped_fork;
-			philo->forks[1] = index;
-		}
+		philo->forks[0] = index;
+		philo->forks[1] = (index + 1) % g_table.seats;
 		philo->index = index;
 		philo->times_ate = 0;
 		philo->time_starve = 0;

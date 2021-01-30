@@ -25,6 +25,7 @@ t_time	table_log(t_philo *philo, const char *message)
 {
 	const t_time	now = time_millis();
 
+	// TODO: Check running
 	sem_wait(g_table.lock_write);
 	putui(STDOUT_FILENO, now - g_table.time_start, FW_TIMESTAMP);
 	write(STDOUT_FILENO, " ", 1);

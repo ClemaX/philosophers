@@ -23,5 +23,5 @@ t_time	time_millis(void)
 void	sleep_until(t_time time_wake)
 {
 	while (time_millis() < time_wake)
-		usleep(100);
+		usleep(700);
 }

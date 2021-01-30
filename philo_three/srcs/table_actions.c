@@ -21,7 +21,7 @@ bool	table_start(t_philo *philos)
 	{
 		g_table.time_start = time_millis();
 		while (i < g_table.seats && philo_start(&philos[i++]))
-			usleep(100);
+			usleep(1000);
 	}
 	return (i == g_table.seats);
 }
