@@ -31,14 +31,17 @@ static void	philo_drop_forks(void)
 
 bool		philo_eat(t_philo *philo)
 {
+	t_time	now;
 	bool	running;
 
 	if ((running = philo_take_forks(philo)))
 	{
+		now = time_millis();
 		sem_wait(philo->lock);
-		philo->time_die = time_millis() + g_table.time_to_die;
+		philo->time_die = now + g_table.time_to_die;
 		sem_post(philo->lock);
-		running = philo_sleep(philo, g_table.time_to_eat, "is eating");
+		table_log(philo, "is eating");
+		sleep_until(now + g_table.time_to_eat);
 		philo_drop_forks();
 		if (running && g_table.appetite
 		&& philo->times_ate < g_table.appetite
@@ -48,21 +51,15 @@ bool		philo_eat(t_philo *philo)
 	return (running);
 }
 
-bool		philo_sleep(t_philo *philo, t_time duration, const char *message)
+bool		philo_sleep(t_philo *philo)
 {
-	bool	running;
-	t_time	now;
-	t_time	time_die;
+	const t_time	time_wake = time_millis() + g_table.time_to_sleep;
+	bool			running;
 
 	if ((running = table_running()))
 	{
-		sem_wait(philo->lock);
-		time_die = philo->time_die;
-		sem_post(philo->lock);
-		now = table_log(philo, message);
-		if (now + duration > time_die)
-			duration = time_die - now;
-		usleep(duration * 1000);
+		table_log(philo, "is sleeping");
+		sleep_until(time_wake);
 	}
 	return (running);
 }

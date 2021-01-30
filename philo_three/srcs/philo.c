@@ -76,7 +76,7 @@ void				*philo_thread(void *data)
 	int				err;
 
 	while (philo_eat(philo)
-	&& philo_sleep(philo, g_table.time_to_sleep, "is sleeping")
+	&& philo_sleep(philo)
 	&& philo_think(philo))
 		;
 	if ((err = pthread_join(philo->tid_observer, NULL)))
