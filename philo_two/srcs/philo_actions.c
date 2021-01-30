@@ -53,8 +53,7 @@ bool		philo_eat(t_philo *philo)
 		table_log(philo, "is eating");
 		sleep_until(now + g_table.time_to_eat);
 		philo_drop_forks();
-		if (g_table.appetite
-		&& philo->times_ate < g_table.appetite
+		if (g_table.appetite && philo->times_ate < g_table.appetite
 		&& ++philo->times_ate == g_table.appetite)
 		{
 			sem_wait(g_table.lock_run);
