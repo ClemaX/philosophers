@@ -12,6 +12,16 @@
 
 #include <observer.h>
 
+static void	observer_log(t_philo *philo, const char *message)
+{
+	putui(STDOUT_FILENO, time_millis() - g_table.time_start, FW_TIMESTAMP);
+	write(STDOUT_FILENO, " ", 1);
+	putui(STDOUT_FILENO, philo->index + 1, g_table.fw_index);
+	write(STDOUT_FILENO, " ", 1);
+	write(STDOUT_FILENO, message, ft_strlen(message));
+	write(STDOUT_FILENO, "\n", 1);
+}
+
 static void	observe_death(t_philo *philo)
 {
 	t_time	time_die;
@@ -26,7 +36,7 @@ static void	observe_death(t_philo *philo)
 			sem_wait(g_table.lock_run);
 			if (g_table.running)
 			{
-				table_log(philo, "died");
+				observer_log(philo, "died");
 				g_table.running = false;
 			}
 			sem_post(g_table.lock_run);

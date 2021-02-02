@@ -44,7 +44,6 @@
 # define SEM_MODE			0000700
 
 # define SEM_FORK_COUNT		"/table_forks"
-# define SEM_WRITE			"/table_write"
 # define SEM_RUN			"/table_run"
 
 typedef struct s_philo	t_philo;
@@ -53,7 +52,7 @@ typedef struct			s_table
 {
 	bool			running;
 	sem_t			*fork_count;
-	sem_t			*lock_write;
+//	sem_t			*lock_write;
 	sem_t			*lock_run;
 	t_uint			seats;
 	t_uint			appetite;

@@ -23,18 +23,22 @@ void	table_show_usage(const char *name)
 
 t_time	table_log(t_philo *philo, const char *message)
 {
-	const t_time	now = time_millis();
+	t_time	time_now;
 
-	// TODO: Check running
-	sem_wait(g_table.lock_write);
-	putui(STDOUT_FILENO, now - g_table.time_start, FW_TIMESTAMP);
-	write(STDOUT_FILENO, " ", 1);
-	putui(STDOUT_FILENO, philo->index + 1, g_table.fw_index);
-	write(STDOUT_FILENO, " ", 1);
-	write(STDOUT_FILENO, message, ft_strlen(message));
-	write(STDOUT_FILENO, "\n", 1);
-	sem_post(g_table.lock_write);
-	return (now);
+	time_now = 0;
+	sem_wait(g_table.lock_run);
+	if (g_table.running)
+	{
+		time_now = time_millis();
+		putui(STDOUT_FILENO, time_now - g_table.time_start, FW_TIMESTAMP);
+		write(STDOUT_FILENO, " ", 1);
+		putui(STDOUT_FILENO, philo->index + 1, g_table.fw_index);
+		write(STDOUT_FILENO, " ", 1);
+		write(STDOUT_FILENO, message, ft_strlen(message));
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	sem_post(g_table.lock_run);
+	return (time_now);
 }
 
 void	table_perror(const char *msg, int err)

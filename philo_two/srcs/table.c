@@ -42,15 +42,12 @@ void			table_del(t_philo **philos)
 		philo_del(&(*philos)[i++]);
 	sem_close(g_table.fork_count);
 	sem_close(g_table.lock_run);
-	sem_close(g_table.lock_write);
 	sem_unlink(SEM_FORK_COUNT);
 	sem_unlink(SEM_RUN);
-	sem_unlink(SEM_WRITE);
 	free(*philos);
 	*philos = NULL;
 	g_table.fork_count = SEM_FAILED;
 	g_table.lock_run = SEM_FAILED;
-	g_table.lock_write = SEM_FAILED;
 }
 
 static bool		table_set(t_philo *philos)
@@ -59,23 +56,16 @@ static bool		table_set(t_philo *philos)
 
 	sem_unlink(SEM_FORK_COUNT);
 	sem_unlink(SEM_RUN);
-	sem_unlink(SEM_WRITE);
 	i = 0;
 	if ((g_table.fork_count = sem_open(SEM_FORK_COUNT, SEM_OFLAGS, SEM_MODE,
-		g_table.seats)) != SEM_FAILED)
+		g_table.seats)) != SEM_FAILED
+	&& (g_table.lock_run = sem_open(SEM_RUN, SEM_OFLAGS, SEM_MODE, 1))
+		!= SEM_FAILED)
 	{
-		if ((g_table.lock_write = sem_open(SEM_WRITE, SEM_OFLAGS, SEM_MODE, 1))
-			!= SEM_FAILED)
-		{
-			if ((g_table.lock_run = sem_open(SEM_RUN, SEM_OFLAGS, SEM_MODE, 1))
-				!= SEM_FAILED)
-			{
-				while (i < g_table.seats && philo_set(&philos[i], i))
-					i++;
-				if (i == g_table.seats)
-					return (true);
-			}
-		}
+		while (i < g_table.seats && philo_set(&philos[i], i))
+			i++;
+		if (i == g_table.seats)
+			return (true);
 	}
 	g_table.seats = i;
 	table_perror("table: semaphores", errno);
