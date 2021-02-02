@@ -28,13 +28,13 @@ static t_time	philo_take_forks(t_philo *philo)
 	return (time_now);
 }
 
-static void	philo_drop_forks(void)
+static void		philo_drop_forks(void)
 {
 	sem_post(g_table.fork_count);
 	sem_post(g_table.fork_count);
 }
 
-t_time		philo_eat(t_philo *philo)
+t_time			philo_eat(t_philo *philo)
 {
 	t_time	time_now;
 
@@ -58,7 +58,7 @@ t_time		philo_eat(t_philo *philo)
 	return (time_now);
 }
 
-t_time		philo_sleep(t_philo *philo)
+t_time			philo_sleep(t_philo *philo)
 {
 	const t_time	time_now = table_log(philo, "is sleeping");
 
@@ -67,7 +67,7 @@ t_time		philo_sleep(t_philo *philo)
 	return (time_now);
 }
 
-t_time		philo_think(t_philo *philo)
+t_time			philo_think(t_philo *philo)
 {
 	return (table_log(philo, "is thinking"));
 }

@@ -52,7 +52,6 @@ typedef struct			s_table
 {
 	bool			running;
 	sem_t			*fork_count;
-//	sem_t			*lock_write;
 	sem_t			*lock_run;
 	t_uint			seats;
 	t_uint			appetite;
