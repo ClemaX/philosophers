@@ -14,17 +14,18 @@
 
 static void	observer_log(t_time now, t_philo *philo, t_philo_state state)
 {
+	static char	template[32] = MSG_TEMPLATE;
 	const char	*message = g_state_msgs[state];
 	size_t		index;
 
-	strputui(philo->log_buffer, now - g_table.time_start, MSG_TSLEN);
+	strputui(template, now - g_table.time_start, MSG_TSLEN);
 	index = MSG_TSLEN + sizeof(MSG_DELIM) - 1;
-	strputui(&philo->log_buffer[index], philo->index + 1, MSG_IDXLEN);
+	strputui(&template[index], philo->index + 1, MSG_IDXLEN);
 	index += MSG_IDXLEN + sizeof(MSG_DELIM) - 1;
 	while (*message)
-		philo->log_buffer[index++] = *message++;
-	philo->log_buffer[index++] = '\n';
-	write(STDOUT_FILENO, philo->log_buffer, index);
+		template[index++] = *message++;
+	template[index++] = '\n';
+	write(STDOUT_FILENO, template, index);
 }
 
 static void	observe_death(t_philo *philo)
